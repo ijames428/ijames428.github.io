@@ -1,5 +1,5 @@
 /// <reference path="Photon/Photon-Javascript_SDK.d.ts"/>
-var PhotonServerAddress = "localhost:9090";
+var PhotonServerAddress = "24.149.29.78:9090";
 var DefaultController = (function () {
     function DefaultController() { }
     DefaultController.logger = new Exitgames.Common.Logger("Demo:");
