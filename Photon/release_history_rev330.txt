@@ -1,0 +1,30 @@
+* release_history.txt
+* Release history for the JavaScript/TypeScript Photon Client Libraries
+(C) 2013 Exit Games GmbH, http://www.exitgames.com
+
+*** Version 3-2-0-0-Beta
+*** Version 3-2-0-1-Beta (08.02.2013 - rev308)
+ADDED: LoadBalancingClient.createRoomFromMy - uses properties (except name) of current room for room creation request
+ADDED: PhotonPeer.StatusCodes.connectClosed - connection closed by server as opposed to StatusCodes.disconnect by client
+
+*** Version 3-2-1-1 (11.04.2013 - rev317)
+ADDED: LoadBalancingClient.joinRandomRoom expectedCustomRoomProperties and expectedMaxPlayers parameters
+BREAKING: LoadBalancingClient.joinRandomRoom matchingType parameter order changed
+ADDED: LoadBalancing.Room setIsVisible, setIsOpen, setMaxPlayers methods for updating standard room properties while joined
+FIXED: LoadBalancingClient.myRoomActors initialized with local client before connection and after disconnect
+CHANGED: LoadBalancingClient.changeState calls moved below client state update in handlers for user could use new states in onStateChange 
+RENAMED: LoadBalancingClient.isConnectedToGame -> isJoinedToRoom
+FIXED: loadBalancingClient.isConnectedToMaster() means masterPeer.isConnected (true all the way while connected to master)
+FIXED: state -> ConnectedToMaster on OperationCode.Authenticate response; state  -> JoinedLobby on OperationCode.JoinLobby response (was ConnectedToMaster)
+BREAKING: previous fix can break code relying on ConnectedToMaster state - replace it with JoinedLobby
+ADDED: LoadBalancingClient.isInLobby - ready to join or create game
+CHANGED: LoadBalancingClient.raiseEvent data parameter is optional
+ADDED: LoadBalancingClient.leaveRoom: after disconnecting from game, reconnects to master if not connected
+CHANGED: LoadBalancingClient.state = JoinedLobby after disconnect from game if still connected to master (via keepMasterConnection = true)
+
+*** Version 3-2-1-2 (01.07.2013 - rev330)
+ADDED: Custom Authentication 
+CHANGED: app settings template replaced with working cloud-app-info.js file with default demo master server = app-eu.exitgamescloud.com:9090
+ADDED: compiled js files, so one can use the project as javascript sdk, without need of typescript compiler 
+ADDED: proxy Photon-Javascript_SDK.d.ts file; demos reference lib sources in development same way as they reference release libs in production
+
