@@ -12,7 +12,7 @@ var __extends = this.__extends || function (d, b) {
 //    AppVersion: "your app version",
 //}
 // fetching app info global variable while in global context
-var ParticleDemoMasterAddress = this["AppInfo"] && this["AppInfo"]["MasterAddress"] ? this["AppInfo"]["MasterAddress"] : "localhost:9090";
+var ParticleDemoMasterAddress = this["AppInfo"] && this["AppInfo"]["MasterAddress"] ? this["AppInfo"]["MasterAddress"] : "24.149.29.78:9090";
 var ParticleDemoAppId = this["AppInfo"] && this["AppInfo"]["AppId"] ? this["AppInfo"]["AppId"] : "<no-app-id>";
 var ParticleDemoAppVersion = this["AppInfo"] && this["AppInfo"]["AppVersion"] ? this["AppInfo"]["AppVersion"] : "1.0";
 var ParticleDemoFbAppId = this["AppInfo"] && this["AppInfo"]["FbAppId"];
