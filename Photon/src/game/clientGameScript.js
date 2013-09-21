@@ -283,10 +283,16 @@ function update() {
     if (localPlayer.getinAir())
         localPlayer.setY(localPlayer.getY() + localPlayer.getdY());
 
-//    ctx.drawImage(localPlayer.imgChar, localPlayer.getX(), localPlayer.getY());
-    
-//    if (localPlayer.getdX() != 0 || localPlayer.getdY() != 0)
-//        socket.emit("move player", {id: localPlayer.getid(), x: localPlayer.getX(), y: localPlayer.getY()});
+    if (localPlayer.getdX() != 0 || localPlayer.getdY() != 0)
+    {
+        try  {
+            DefaultController.peer.raiseEvent(2, {
+                id: localPlayer.getid(), x: localPlayer.getX(), y: localPlayer.getY()
+            });
+        } catch (err) {
+            DefaultController.output("error: " + err.message);
+        }
+    }
 
     stats.end();
 };
@@ -412,6 +418,17 @@ c.addEventListener('mousemove', function(evt) {
     message = mousePos.x + ',' + mousePos.y;
 }, false);
 
+function playerById(id) {
+    var i;
+    for (i = 0; i < remotePlayers.length; i++) {
+//        console.log(remotePlayers[i].id);
+        if (remotePlayers[i].id == id)
+            return remotePlayers[i];
+    };
+
+    return false;
+};
+
 
 /**************************************************
 ** GAME DRAW
@@ -425,4 +442,89 @@ function draw() {
     for (i = 0; i < remotePlayers.length; i++) {
         remotePlayers[i].draw(ctx);
     };
+};
+
+/// <reference path="Photon/Photon-Javascript_SDK.d.ts"/>
+var PhotonServerAddress = "24.149.29.78:9090";
+var DefaultController = (function () {
+    function DefaultController() { }
+    DefaultController.logger = new Exitgames.Common.Logger("Demo:");
+    DefaultController.setupUI = function setupUI() {
+        this.logger.info("Setting up UI.");
+        var input = document.getElementById("input");
+        input.value = 'hello';
+        input.focus();
+        var form = document.getElementById("mainfrm");
+        form.onsubmit = function () {
+            var input = document.getElementById("input");
+            try  {
+                DefaultController.peer.raiseEvent(1, {
+                    message: String(input.value)
+                });
+                DefaultController.output('me[' + DefaultController.peer.myActor().photonId + ']: ' + input.value);
+            } catch (err) {
+                DefaultController.output("error: " + err.message);
+            }
+            input.value = '';
+            input.focus();
+            return false;
+        };
+        var btn = document.getElementById("closebtn");
+        btn.onclick = function (ev) {
+            DefaultController.peer.disconnect();
+            return false;
+        };
+    };
+    DefaultController.start = function start() {
+        DefaultController.peer = new Photon.Lite.LitePeer("ws://" + PhotonServerAddress, '');
+        DefaultController.peer.setLogLevel(Exitgames.Common.Logger.Level.DEBUG);
+        // Set event handlers.
+        DefaultController.peer.addPeerStatusListener(Photon.PhotonPeer.StatusCodes.connect, function () {
+            DefaultController.output("Connected!");
+            DefaultController.peer.join('DemoChat');
+        });
+        DefaultController.peer.addResponseListener(Photon.Lite.Constants.LiteOpCode.Join, function (e) {
+            localPlayer.setid(e.actorNr);
+            DefaultController.output('I joined with id: [' + e.actorNr + '].');
+        });
+        DefaultController.peer.addEventListener(Photon.Lite.Constants.LiteEventCode.Join, function (e) {
+            for(var i = 0; i < e.newActors.length; i++) {
+                if(e.newActors[i] != DefaultController.peer.myActor().photonId) {
+                    onNewPlayer({id: e.actorNr, x: 400, y: 200});
+                    DefaultController.output('actor[' + e.newActors[i] + '] joined!');
+                }
+            }
+        });
+        DefaultController.peer.addEventListener(Photon.Lite.Constants.LiteEventCode.Leave, function (e) {
+            DefaultController.output('actor[' + e.actorNr + '] left!');
+        });
+        DefaultController.peer.addEventListener(1, function (data) {
+            var text = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].message;// we get JSON back from Photon, the text we pass in by submitMessage() below is passed back here
+            
+            var actorNr = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.ActorNr];// each client joining is identified with a actor number.
+            
+            DefaultController.peer._logger.debug('myChat - chat message:', arguments[0]);
+            DefaultController.output('actor[' + actorNr + '] - says: ' + text);
+        });
+        DefaultController.peer.addEventListener(2, function (data) {
+            var actorNr = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.ActorNr];
+            var dataid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
+            var datax  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].x;
+            var datay  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].y;
+            onMovePlayer({id : dataid, x : datax, y : datay});
+            DefaultController.output('actor[' + actorNr + " " + dataid + '] - says: ' + datax + " " + datay);
+        });
+        DefaultController.peer.connect();
+    };
+    DefaultController.output = function output(str) {
+        var log = document.getElementById("theDialogue");
+        var escaped = str.replace(/&/, "&amp;").replace(/</, "&lt;").replace(/>/, "&gt;").replace(/"/, "&quot;");
+        log.innerHTML = log.innerHTML + escaped + "<br>";
+        log.scrollTop = log.scrollHeight;
+    };
+    return DefaultController;
+})();
+window.onload = function () {
+    DefaultController.setupUI();
+    DefaultController.start();
 };
