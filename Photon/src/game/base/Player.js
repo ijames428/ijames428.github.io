@@ -75,7 +75,7 @@ var Player = function(startX, startY, imgSrc) {
     var draw = function(ctx) {
 //        console.log(id + " " + x + " " + y);
         ctx.drawImage(imgChar, x, y);
-        ctx.fillRect(id, 10, 10);
+//        ctx.fillRect(id, 10, 10);
 //        ctx.fillText(x + " " + y, 10, 25);
     };
 
