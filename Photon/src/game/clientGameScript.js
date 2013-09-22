@@ -276,8 +276,10 @@ function onMovePlayerRight(data) {
         return;
     };
     
-    movePlayer.setDdown(true)
-    movePlayer.setAdown(false)
+    movePlayer.setDdown(true);
+    movePlayer.setAdown(false);
+    movePlayer.setX(data.x);
+    movePlayer.setY(data.y);
 };
 
 function onMovePlayerLeft(data) {
@@ -288,8 +290,10 @@ function onMovePlayerLeft(data) {
         return;
     };
     
-    movePlayer.setAdown(true)
-    movePlayer.setDdown(false)
+    movePlayer.setAdown(true);
+    movePlayer.setDdown(false);
+    movePlayer.setX(data.x);
+    movePlayer.setY(data.y);
 };
 
 function onMovePlayerNeutral(data) {
@@ -302,6 +306,8 @@ function onMovePlayerNeutral(data) {
     
     movePlayer.setAdown(false);
     movePlayer.setDdown(false);
+    movePlayer.setX(data.x);
+    movePlayer.setY(data.y);
 };
 
 function onMovePlayer(data) {
@@ -617,15 +623,21 @@ var DefaultController = (function () {
         });
         DefaultController.peer.addEventListener(RIGHT, function (data) {
             var dataid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
-            onMovePlayerRight({id : dataid});
+            var datax  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].x;
+            var datay  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].y;
+            onMovePlayerRight({id : dataid, x : datax, y : datay});
         });
         DefaultController.peer.addEventListener(LEFT, function (data) {
             var dataid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
-            onMovePlayerLeft({id : dataid});
+            var datax  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].x;
+            var datay  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].y;
+            onMovePlayerLeft({id : dataid, x : datax, y : datay});
         });
         DefaultController.peer.addEventListener(NEUTRAL, function (data) {
             var dataid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
-            onMovePlayerNeutral({id : dataid});
+            var datax  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].x;
+            var datay  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].y;
+            onMovePlayerNeutral({id : dataid, x : datax, y : datay});
         });
         DefaultController.peer.connect();
     };
