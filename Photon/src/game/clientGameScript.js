@@ -300,8 +300,8 @@ function onMovePlayerNeutral(data) {
         return;
     };
     
-    movePlayer.setAdown(false)
-    movePlayer.setDdown(false)
+    movePlayer.setAdown(false);
+    movePlayer.setDdown(false);
 };
 
 function onMovePlayer(data) {
