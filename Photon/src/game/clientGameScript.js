@@ -35,6 +35,12 @@ var midCharX = 0;
 var midCharY = 0;
 var midBoxX = 0;
 var midBoxY = 0;
+var lastHeartBeat = Date.now();
+
+var RIGHT = 3;
+var LEFT = 4;
+var NEUTRAL = 5;
+var JUMP = 6;
 
 var distX = midCharX - midBoxX;
 var distY = midCharY - midBoxY;
@@ -107,8 +113,18 @@ function onKeydown(e) {
             break;
         case 65://A
             inputMsg = "A";
-            if (!localPlayer.getDdown())
+            if (!localPlayer.getDdown() && !localPlayer.getAdown())
+            {
                 localPlayer.setAdown(true);
+                
+                try  {
+                    DefaultController.peer.raiseEvent(LEFT, {
+                    id: localPlayer.getid(), x: localPlayer.getX(), y: localPlayer.getY()
+                    });
+                } catch (err) {
+                    DefaultController.output("error125: " + err.message);
+                }
+            }
             break;
         case 83://S
             inputMsg = "S";
@@ -117,8 +133,18 @@ function onKeydown(e) {
             break;
         case 68://D
             inputMsg = "D";
-            if (!localPlayer.getAdown())
+            if (!localPlayer.getAdown() && !localPlayer.getDdown())
+            {
                 localPlayer.setDdown(true);
+                
+                try  {
+                    DefaultController.peer.raiseEvent(RIGHT, {
+                    id: localPlayer.getid(), x: localPlayer.getX(), y: localPlayer.getY()
+                    });
+                } catch (err) {
+                    DefaultController.output("error145: " + err.message);
+                }
+            }
             break;
         case 32://SPACE_BAR
             inputMsg = "SPACE";
@@ -163,7 +189,17 @@ function onKeyup(e) {
         case 65://A
             inputMsg = "A";
             if (localPlayer.getAdown())
+            {
                 localPlayer.setAdown(false);
+                
+                try  {
+                    DefaultController.peer.raiseEvent(NEUTRAL, {
+                    id: localPlayer.getid(), x: localPlayer.getX(), y: localPlayer.getY()
+                    });
+                } catch (err) {
+                    DefaultController.output("error200: " + err.message);
+                }
+            }
             break;
         case 83://S
             inputMsg = "S";
@@ -172,7 +208,17 @@ function onKeyup(e) {
         case 68://D
             inputMsg = "D";
             if (localPlayer.getDdown())
+            {
                 localPlayer.setDdown(false);
+            
+                try  {
+                    DefaultController.peer.raiseEvent(NEUTRAL, {
+                    id: localPlayer.getid(), x: localPlayer.getX(), y: localPlayer.getY()
+                    });
+                } catch (err) {
+                    DefaultController.output("error219: " + err.message);
+                }
+            }
             break;
         case 32://SPACE_BAR
             inputMsg = "SPACE";
@@ -181,7 +227,7 @@ function onKeyup(e) {
                 localPlayer.setinAir(true);
                 localPlayer.setpreppingJump(false);
                 if ((localPlayer.getjumpChargeStartTime() - Date.now()) / 40 <= -6)
-                    localPlayer.setdY(Math.max((localPlayer.getjumpChargeStartTime() - Date.now()) / 40, -12));
+                    localPlayer.setdY(Math.floor(Math.max((localPlayer.getjumpChargeStartTime() - Date.now()) / 40, -12)));
                 else
                     localPlayer.setdY(-6);
             }
@@ -222,6 +268,42 @@ function onNewPlayer(data) {
     remotePlayers.push(newPlayer);
 };
 
+function onMovePlayerRight(data) {
+    var movePlayer = playerById(data.id);
+
+    if (!movePlayer) {
+        console.log("client250Player not found: "+data.id);
+        return;
+    };
+    
+    movePlayer.setDdown(true)
+    movePlayer.setAdown(false)
+};
+
+function onMovePlayerLeft(data) {
+    var movePlayer = playerById(data.id);
+
+    if (!movePlayer) {
+        console.log("client250Player not found: "+data.id);
+        return;
+    };
+    
+    movePlayer.setAdown(true)
+    movePlayer.setDdown(false)
+};
+
+function onMovePlayerNeutral(data) {
+    var movePlayer = playerById(data.id);
+
+    if (!movePlayer) {
+        console.log("client250Player not found: "+data.id);
+        return;
+    };
+    
+    movePlayer.setAdown(false)
+    movePlayer.setDdown(false)
+};
+
 function onMovePlayer(data) {
     var movePlayer = playerById(data.id);
 
@@ -233,6 +315,7 @@ function onMovePlayer(data) {
     };
     
     // Update player position
+    
     movePlayer.setX(data.x);
     movePlayer.setY(data.y);
 //    movePlayer.x = data.x;
@@ -256,65 +339,82 @@ function animate() {
 **************************************************/
 function update() {
     stats.begin();
-
-    if (localPlayer.getAdown())
-    {
-        localPlayer.setdX(-1);
-    }
-    if (localPlayer.getDdown())
-    {
-        localPlayer.setdX(1);
-    }
-
+    
+    updateMovement(localPlayer);
+    
+    for (i = 0; i < remotePlayers.length; i++) {
+        updateMovement(remotePlayers[i]);
+    };
+    
     ctx.clearRect(0, 0, c.width, c.height);
     drawWorld();
-
-    if (!CheckCollision())
-        localPlayer.setinAir(true);
-
-    if (localPlayer.getinAir())
-    {
-        localPlayer.setdX(localPlayer.getdX() * 0.5);
-        localPlayer.setdY(localPlayer.getdY() + 0.2);
-    }
-
-    if (!localPlayer.getpreppingJump() || ((localPlayer.getjumpChargeStartTime() - Date.now()) / 40 >= -3))
-        localPlayer.setX(localPlayer.getX() + localPlayer.getdX() * localPlayer.getspd());
-    if (localPlayer.getinAir())
-        localPlayer.setY(localPlayer.getY() + localPlayer.getdY());
-
-    if (localPlayer.getdX() != 0 || localPlayer.getdY() != 0)
-    {
-        try  {
-            DefaultController.peer.raiseEvent(2, {
-                id: localPlayer.getid(), x: localPlayer.getX(), y: localPlayer.getY()
-            });
-        } catch (err) {
-            DefaultController.output("error: " + err.message);
-        }
-    }
 
     stats.end();
 };
 
-function CheckCollision() {
-    if (localPlayer.getX() - 1 * localPlayer.getspd() < 0)
+function updateMovement(player)
+{
+    if (player.getAdown())
     {
-        if (localPlayer.getdX() < 0)
-            localPlayer.setdX(0);
+        player.setdX(-1);
     }
-    if (localPlayer.getY() + 1 * localPlayer.getspd() < 0)
+    if (player.getDdown())
     {
-        localPlayer.setY(0);
+        player.setdX(1);
     }
-    if (localPlayer.getX() + 1 * localPlayer.getspd() > c.width - localPlayer.getcharW())
+
+    if (!CheckCollision(player))
+        player.setinAir(true);
+
+    if (player.getinAir())
     {
-        if (localPlayer.getdX() > 0)
-            localPlayer.setdX(0);
+        player.setdX(player.getdX() * 0.5);
+        player.setdY(player.getdY() + 0.25);
     }
-    if (localPlayer.getY() - 1 * localPlayer.getspd() > c.height - localPlayer.getcharH())
+
+//    localPlayer.setdX(Math.floor(localPlayer.getdX() * 100) / 100);
+//    localPlayer.setdY(Math.floor(localPlayer.getdY() * 100) / 100);
+        
+    if (!player.getpreppingJump() || ((player.getjumpChargeStartTime() - Date.now()) / 40 >= -3))
+        player.setX(Math.floor(player.getX() + player.getdX() * player.getspd()));
+    if (player.getinAir())
+        player.setY(player.getY() + player.getdY());
+
+    if (lastHeartBeat + 100 < Date.now())
     {
-        localPlayer.setY(c.height - localPlayer.getcharH());
+        if (player.getdX() != 0 || player.getdY() != 0)
+        {
+            try  {
+                DefaultController.peer.raiseEvent(2, {
+                    id: player.getid(), x: player.getX(), y: player.getY()
+                });
+                DefaultController.output("sent HB");
+            } catch (err) {
+                DefaultController.output("error392: " + err.message);
+            }
+        }
+        lastHeartBeat = Date.now();
+    }
+}
+
+function CheckCollision(player) {
+    if (player.getX() - 1 * player.getspd() < 0)
+    {
+        if (player.getdX() < 0)
+            player.setdX(0);
+    }
+    if (player.getY() + 1 * player.getspd() < 0)
+    {
+        player.setY(0);
+    }
+    if (player.getX() + 1 * player.getspd() > c.width - player.getcharW())
+    {
+        if (player.getdX() > 0)
+            player.setdX(0);
+    }
+    if (player.getY() - 1 * player.getspd() > c.height - player.getcharH())
+    {
+        player.setY(c.height - player.getcharH());
     }
 
     for (x = 0; x < level[0].length; x++)
@@ -323,50 +423,50 @@ function CheckCollision() {
         {
             if (level[y][x] == 1)
             {
-                midCharX = localPlayer.getX() + localPlayer.getcharW() / 2;//+ localPlayer.getdX() * localPlayer.getspd() + localPlayer.getcharW()/2;
-                if (localPlayer.getinAir())
-                    midCharY = localPlayer.getY() + localPlayer.getdY() + localPlayer.getcharH() / 2;
+                midCharX = player.getX() + player.getcharW() / 2;//+ localPlayer.getdX() * localPlayer.getspd() + localPlayer.getcharW()/2;
+                if (player.getinAir())
+                    midCharY = player.getY() + player.getdY() + player.getcharH() / 2;
                 else
-                    midCharY = localPlayer.getY() + localPlayer.getcharH() / 2;
+                    midCharY = player.getY() + player.getcharH() / 2;
                 midBoxX = x * 50 + 25;
                 midBoxY = y * 50 + 25;
 
                 distX = midCharX - midBoxX;
                 distY = midCharY - midBoxY;
 
-                if (Math.abs(distX) < localPlayer.getcharW() / 2 + 25 && Math.abs(distY) < localPlayer.getcharH() / 2 + 25)
+                if (Math.abs(distX) < player.getcharW() / 2 + 25 && Math.abs(distY) < player.getcharH() / 2 + 25)
                 {
-                    if (distY <= 0 && localPlayer.getdY() > 0)//above
+                    if (distY <= 0 && player.getdY() > 0)//above
                     {
-                        localPlayer.setY(y * 50 - localPlayer.getcharH());
-                        localPlayer.setdY(0);
-                        localPlayer.setinAir(false);
-                        localPlayer.setdX(0);
+                        player.setY(y * 50 - player.getcharH());
+                        player.setdY(0);
+                        player.setinAir(false);
+                        player.setdX(0);
                     }
-                    else if (distY > 0 && localPlayer.getdY() < 0)//below
+                    else if (distY > 0 && player.getdY() < 0)//below
                     {
-                        localPlayer.setdY(0);
+                        player.setdY(0);
                     }
                     //need to figure out what the primary direction is.
-                    if (distX < 0 && localPlayer.getdX() > 0)//left
+                    if (distX < 0 && player.getdX() > 0)//left
                     {
-                        localPlayer.setdX(0);
+                        player.setdX(0);
                     }
-                    else if (distX > 0 && localPlayer.getdX() < 0)//right
+                    else if (distX > 0 && player.getdX() < 0)//right
                     {
-                        localPlayer.setdX(0);
+                        player.setdX(0);
                     }
 
                     return true;
                 }
-                if (Math.abs(distX) < localPlayer.getcharW() / 2 + 25 && Math.abs(distY) < localPlayer.getcharH() / 2 + 26)
+                if (Math.abs(distX) < player.getcharW() / 2 + 25 && Math.abs(distY) < player.getcharH() / 2 + 26)
                 {
-                    if (distY <= 0 && localPlayer.getdY() > 0)//above
+                    if (distY <= 0 && player.getdY() > 0)//above
                     {
-                        localPlayer.setY(y * 50 - localPlayer.getcharH());
-                        localPlayer.setdY(0);
-                        localPlayer.setinAir(false);
-                        localPlayer.setdX(0);
+                        player.setY(y * 50 - player.getcharH());
+                        player.setdY(0);
+                        player.setinAir(false);
+                        player.setdX(0);
                     }
                     return true;
                 }
@@ -463,7 +563,7 @@ var DefaultController = (function () {
                 });
                 DefaultController.output('me[' + DefaultController.peer.myActor().photonId + ']: ' + input.value);
             } catch (err) {
-                DefaultController.output("error: " + err.message);
+                DefaultController.output("error565: " + err.message);
             }
             input.value = '';
             input.focus();
@@ -484,7 +584,7 @@ var DefaultController = (function () {
             DefaultController.peer.join('DemoChat');
         });
         DefaultController.peer.addResponseListener(Photon.Lite.Constants.LiteOpCode.Join, function (e) {
-            localPlayer.setid(e.actorNr);
+            localPlayer.id = e.actorNr;
             DefaultController.output('I joined with id: [' + e.actorNr + '].');
         });
         DefaultController.peer.addEventListener(Photon.Lite.Constants.LiteEventCode.Join, function (e) {
@@ -513,6 +613,18 @@ var DefaultController = (function () {
             var datay  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].y;
             onMovePlayer({id : dataid, x : datax, y : datay});
             DefaultController.output('actor[' + actorNr + " " + dataid + '] - says: ' + datax + " " + datay);
+        });
+        DefaultController.peer.addEventListener(RIGHT, function (data) {
+            var dataid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
+            onMovePlayerRight({id : dataid});
+        });
+        DefaultController.peer.addEventListener(LEFT, function (data) {
+            var dataid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
+            onMovePlayerLeft({id : dataid});
+        });
+        DefaultController.peer.addEventListener(NEUTRAL, function (data) {
+            var dataid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
+            onMovePlayerNeutral({id : dataid});
         });
         DefaultController.peer.connect();
     };
