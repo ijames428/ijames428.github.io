@@ -362,6 +362,10 @@ function updateMovement(player)
     {
         player.setdX(1);
     }
+    if (!player.getDdown() && !player.getAdown())
+    {
+        player.setdX(0);
+    }
 
     if (!CheckCollision(player))
         player.setinAir(true);
@@ -380,21 +384,18 @@ function updateMovement(player)
     if (player.getinAir())
         player.setY(player.getY() + player.getdY());
 
-//    if (lastHeartBeat + 100 < Date.now())
-//    {
-//        if (player.getdX() != 0 || player.getdY() != 0)
-//        {
-//            try  {
-//                DefaultController.peer.raiseEvent(2, {
-//                    id: player.getid(), x: player.getX(), y: player.getY()
-//                });
-//                DefaultController.output("sent HB");
-//            } catch (err) {
-//                DefaultController.output("error392: " + err.message);
-//            }
-//        }
-//        lastHeartBeat = Date.now();
-//    }
+    if (lastHeartBeat + 200 < Date.now())
+    {
+        try  {
+            DefaultController.peer.raiseEvent(2, {
+                id: player.getid(), x: player.getX(), y: player.getY()
+            });
+            DefaultController.output("sent HB");
+        } catch (err) {
+            DefaultController.output("error392: " + err.message);
+        }
+        lastHeartBeat = Date.now();
+    }
 }
 
 function CheckCollision(player) {
