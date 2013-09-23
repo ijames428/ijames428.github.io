@@ -8,15 +8,14 @@ var Player = function(startX, startY, imgSrc) {
     var Ddown = false;
     var name = "";
     var inAir = true;
-    var preppingJump = false;
     var charW = 58;
     var charH = 98;
     var dX = 0;
     var dY = 0;
     var spd = 4;
-    var jumpChargeStartTime = 0;
     var imgChar = new Image();
     imgChar.src = imgSrc;
+    var jumpPower = -11;
     
     var x = startX,
         y = startY,
@@ -29,28 +28,26 @@ var Player = function(startX, startY, imgSrc) {
     var getDdown = function() { return Ddown; };
     var getname = function() { return name; };
     var getinAir = function() { return inAir; };
-    var getpreppingJump = function() { return preppingJump; };
     var getcharW = function() { return charW; };
     var getcharH = function() { return charH; };
     var getdX = function() { return dX; };
     var getdY = function() { return dY; };
     var getspd = function() { return spd; };
-    var getjumpChargeStartTime = function() { return jumpChargeStartTime; };
     var getid = function() { return id; };
+    var getjumpPower = function() { return jumpPower; };
     var setWdown = function(input) { Wdown = input; };
     var setAdown = function(input) { Adown = input; };
     var setSdown = function(input) { Sdown = input; };
     var setDdown = function(input) { Ddown = input; };
     var setname = function(input) { name = input; };
     var setinAir = function(input) { inAir = input; };
-    var setpreppingJump = function(input) { preppingJump = input; };
     var setcharW = function(input) { charW = input; };
     var setcharH = function(input) { charH = input; };
     var setdX = function(input) { dX = input; };
     var setdY = function(input) { dY = input; };
     var setspd = function(input) { spd = input; };
-    var setjumpChargeStartTime = function(input) { jumpChargeStartTime = input; };
     var setid = function(input) { id = input; };
+    var setjumpPower = function(input) { jumpPower = input; };
 
     var getX = function() {
         return x;
@@ -92,26 +89,24 @@ var Player = function(startX, startY, imgSrc) {
             getDdown:getDdown,
             getname:getname,
             getinAir:getinAir,
-            getpreppingJump:getpreppingJump,
             getcharW:getcharW,
             getcharH:getcharH,
             getdX:getdX,
             getdY:getdY,
             getspd:getspd,
-            getjumpChargeStartTime:getjumpChargeStartTime,
+            getjumpPower:getjumpPower,
             setWdown:setWdown,
             setAdown:setAdown,
             setSdown:setSdown,
             setDdown:setDdown,
             setname:setname,
             setinAir:setinAir,
-            setpreppingJump:setpreppingJump,
             setcharW:setcharW,
             setcharH:setcharH,
             setdX:setdX,
             setdY:setdY,
             setspd:setspd,
-            setjumpChargeStartTime:setjumpChargeStartTime,
-            getid: getid
+            getid: getid,
+            setjumpPower:setjumpPower
     }
 };

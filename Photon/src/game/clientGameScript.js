@@ -6,18 +6,19 @@ var localPlayer,                // Local player
     
 var development = true;
 
-var level = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
+var level = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+             [1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+             [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
 var txt = "";
 var c = document.getElementById("myCanvas");
 c.height = level.length * 50;
@@ -150,9 +151,8 @@ function onKeydown(e) {
             inputMsg = "SPACE";
             if (!localPlayer.getinAir())
             {
-                if (!localPlayer.getpreppingJump())
-                    localPlayer.setjumpChargeStartTime(Date.now());
-                localPlayer.setpreppingJump(true);
+                localPlayer.setinAir(true);
+                localPlayer.setdY(localPlayer.getjumpPower());
             }
             break;
     }
@@ -224,12 +224,6 @@ function onKeyup(e) {
             inputMsg = "SPACE";
             if (!localPlayer.getinAir())
             {
-                localPlayer.setinAir(true);
-                localPlayer.setpreppingJump(false);
-                if ((localPlayer.getjumpChargeStartTime() - Date.now()) / 40 <= -6)
-                    localPlayer.setdY(Math.floor(Math.max((localPlayer.getjumpChargeStartTime() - Date.now()) / 40, -12)));
-                else
-                    localPlayer.setdY(-6);
             }
             break;
     }
@@ -378,15 +372,17 @@ function updateMovement(player)
 
     if (player.getinAir())
     {
-        player.setdX(player.getdX() * 0.5);
+        if (player.getdX() >= 0)
+            player.setdX(player.getdX() - 0.125);
+        else
+            player.setdX(player.getdX() + 0.125);
         player.setdY(player.getdY() + 0.25);
     }
 
 //    localPlayer.setdX(Math.floor(localPlayer.getdX() * 100) / 100);
 //    localPlayer.setdY(Math.floor(localPlayer.getdY() * 100) / 100);
         
-    if (!player.getpreppingJump() || ((player.getjumpChargeStartTime() - Date.now()) / 40 >= -3))
-        player.setX(Math.floor(player.getX() + player.getdX() * player.getspd()));
+    player.setX(Math.floor(player.getX() + player.getdX() * player.getspd()));
     if (player.getinAir())
         player.setY(player.getY() + player.getdY());
 
@@ -503,13 +499,7 @@ function writeMessage() {
     ctx.fillText(localPlayer.getX() + " " + localPlayer.getY(), 10, 25);
 //    ctx.fillText(localPlayer.getinAir(), 10, 55);
 //    ctx.fillText(inputMsg, 10, 85);
-    if (development)
-    {
-        ctx.fillText("Binsou", localPlayer.getX() + localPlayer.getdX(), localPlayer.getY() - 25 + localPlayer.getdY());
-        ctx.fillText("<DEV>", localPlayer.getX() + localPlayer.getdX(), localPlayer.getY() - 5 + localPlayer.getdY());
-    }
-    else if (localPlayer.getname())
-        ctx.fillText(localPlayer.getname(), localPlayer.getX() + localPlayer.getdX(), localPlayer.getY() - 5 + localPlayer.getdY());
+    ctx.fillText(localPlayer.getname(), localPlayer.getX() + localPlayer.getdX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 5 + localPlayer.getdY());
 }
 
 function getMousePos(c, evt) {
@@ -564,13 +554,29 @@ var DefaultController = (function () {
         var form = document.getElementById("mainfrm");
         form.onsubmit = function () {
             var input = document.getElementById("input");
-            try  {
-                DefaultController.peer.raiseEvent(1, {
-                    message: String(input.value)
-                });
-                DefaultController.output('me[' + DefaultController.peer.myActor().photonId + ']: ' + input.value);
-            } catch (err) {
-                DefaultController.output("error565: " + err.message);
+            if (String(input.value).indexOf("/name ") != -1)
+            {
+                var name = "";
+                if (String(input.value).length > 17)
+                {
+                    name = String(input.value).substr(6, 11);
+                }
+                else
+                {
+                    name = String(input.value).substring(6, String(input.value).length);
+                }
+                localPlayer.setname(name);
+            }
+            else
+            {
+                try  {
+                    DefaultController.peer.raiseEvent(1, {
+                        message: String(input.value)
+                    });
+                    DefaultController.output('me[' + DefaultController.peer.myActor().photonId + ']: ' + input.value);
+                } catch (err) {
+                    DefaultController.output("error565: " + err.message);
+                }
             }
             input.value = '';
             input.focus();
