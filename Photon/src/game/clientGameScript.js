@@ -153,6 +153,14 @@ function onKeydown(e) {
             {
                 localPlayer.setinAir(true);
                 localPlayer.setdY(localPlayer.getjumpPower());
+                
+                try {
+                    DefaultController.peer.raiseEvent(JUMP, {
+                        id: localPlayer.getid(), x: localPlayer.getX(), y: localPlayer.getY(), jp: localPlayer.getjumpPower()
+                    });
+                } catch (err) {
+                    DefaultController.output("error145: " + err.message);
+                }
             }
             break;
     }
@@ -310,8 +318,8 @@ function onMovePlayer(data) {
 //    console.log(data.id + " " + data.x + " " + data.y);
     // Player not found
     if (!movePlayer) {
-            console.log("client250Player not found: "+data.id);
-            return;
+        console.log("client250Player not found: "+data.id);
+        return;
     };
     
     // Update player position
@@ -321,6 +329,20 @@ function onMovePlayer(data) {
 //    movePlayer.x = data.x;
 //    movePlayer.y = data.y;
 };
+
+function onJumpPlayer(data)
+{
+    var jumpPlayer = playerByID(data.id);
+    
+    if (!jumpPlayer) {
+        console.log("jumpPlayer not found: " + data.id);
+    }
+    
+    jumpPlayer.setX(data.x);
+    jumpPlayer.setY(data.y);
+    jumpPlayer.setinAir(true);
+    jumpPlayer.setdY(jumpPlayer.getjumpPower());
+}
 
 /**************************************************
 ** GAME ANIMATION LOOP
@@ -644,6 +666,13 @@ var DefaultController = (function () {
             var datax  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].x;
             var datay  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].y;
             onMovePlayerNeutral({id : dataid, x : datax, y : datay});
+        });
+        DefaultController.peer.addEventListener(JUMP, function (data) {
+            var dataid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
+            var datax  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].x;
+            var datay  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].y;
+            var datajp = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].jp;
+            onJumpPlayer({id : dataid, x : datax, y : datay, jp : datajp});
         });
         DefaultController.peer.connect();
     };
