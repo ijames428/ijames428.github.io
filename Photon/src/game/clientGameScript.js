@@ -42,6 +42,7 @@ var RIGHT = 3;
 var LEFT = 4;
 var NEUTRAL = 5;
 var JUMP = 6;
+var NAME = 7;
 
 var distX = midCharX - midBoxX;
 var distY = midCharY - midBoxY;
@@ -341,7 +342,17 @@ function onJumpPlayer(data) {
     jumpPlayer.setY(data.y);
     jumpPlayer.setinAir(true);
     jumpPlayer.setdY(jumpPlayer.getjumpPower());
-}
+};
+
+function onNamePlayer(data) {
+    var namePlayer = playerById(data.id);
+    
+    if (!namePlayer) {
+        console.log("jumpPlayer not found: " + data.id);
+    }
+    
+    namePlayer.setname(data.name);
+};
 
 /**************************************************
 ** GAME ANIMATION LOOP
@@ -393,10 +404,13 @@ function updateMovement(player)
 
     if (player.getinAir())
     {
-        if (player.getdX() >= 0)
+        if (player.getdX() > 0)
             player.setdX(player.getdX() - 0.125);
-        else
+        else if (player.getdX() < 0)
             player.setdX(player.getdX() + 0.125);
+        else
+        {
+        }
         player.setdY(player.getdY() + 0.25);
     }
 
@@ -672,6 +686,13 @@ var DefaultController = (function () {
             var datay  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].y;
             var datajp = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].jp;
             onJumpPlayer({id : dataid, x : datax, y : datay, jp : datajp});
+        });
+        DefaultController.peer.addEventListener(NAME, function (data) {
+            var dataid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
+            var datax  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].x;
+            var datay  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].y;
+            var dataname = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].name;
+            onNamePlayer({id : dataid, x : datax, y : datay, jp : dataname});
         });
         DefaultController.peer.connect();
     };
