@@ -330,9 +330,8 @@ function onMovePlayer(data) {
 //    movePlayer.y = data.y;
 };
 
-function onJumpPlayer(data)
-{
-    var jumpPlayer = playerByID(data.id);
+function onJumpPlayer(data) {
+    var jumpPlayer = playerById(data.id);
     
     if (!jumpPlayer) {
         console.log("jumpPlayer not found: " + data.id);
