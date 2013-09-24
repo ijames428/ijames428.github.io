@@ -6,18 +6,18 @@ var localPlayer,                // Local player
     
 var development = true;
 
-var level = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-             [1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-             [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+var level = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
 var txt = "";
 var c = document.getElementById("myCanvas");
@@ -32,17 +32,22 @@ var imageBG = new Image();
 imageBG.src = "http://coolvibe.com/wp-content/uploads/2011/05/monolith.jpg";
 var imageObj = new Image();
 imageObj.src = 'http://i.imgur.com/nVINE2F.png';
+var imageHB = new Image();
+imageHB.src = "http://i.imgur.com/dpHHAIC.png";
 var midCharX = 0;
 var midCharY = 0;
 var midBoxX = 0;
 var midBoxY = 0;
 var lastHeartBeat = Date.now();
+var localID = -1;
 
 var RIGHT = 3;
 var LEFT = 4;
 var NEUTRAL = 5;
 var JUMP = 6;
 var NAME = 7;
+var HIT = 8;
+var ATTACK = 9;
 
 var distX = midCharX - midBoxX;
 var distY = midCharY - midBoxY;
@@ -65,7 +70,8 @@ function init() {
 
     // Initialise the local player
     localPlayer = new Player(startX, startY, 'http://www.vgmuseum.com/mrp/cv-sotn/characters/saturn-alucard(2).gif');
-
+    localPlayer.id = localID;
+    
     remotePlayers = [];
     // Start listening for events
     setEventHandlers();
@@ -185,6 +191,8 @@ function onKeyup(e) {
             break;
         case 49://1
             inputMsg = "1";
+            if (!localPlayer.getattacking())
+                localPlayer.Attack();
             break;
         case 50://2
             inputMsg = "2";
@@ -354,6 +362,31 @@ function onNamePlayer(data) {
     namePlayer.setname(data.name);
 };
 
+function onHitPlayer(data) {
+    var attackingPlayer = playerById(parseInt(data.eid));
+    
+    if (!attackingPlayer) {
+        console.log("attackingPlayer not found: " + data.eid);
+    }
+    else
+    {
+        attackingPlayer.Attack();
+    }
+    
+    if (localPlayer.getid() == parseInt(data.id))
+    {
+        localPlayer.TakeDamage(parseInt(data.dmg));
+    }
+    else
+    {
+        var hitPlayer = playerById(parseInt(data.id));
+        if (!hitPlayer) {
+            DefaultController.output("hitPlayer not found: " + data.id);
+        }
+        hitPlayer.TakeDamage(parseInt(data.dmg));
+    }
+};
+
 /**************************************************
 ** GAME ANIMATION LOOP
 **************************************************/
@@ -376,6 +409,29 @@ function update() {
     
     for (i = 0; i < remotePlayers.length; i++) {
         updateMovement(remotePlayers[i]);
+        var damage = localPlayer.DidAttackHit(remotePlayers[i]) + "";
+        var eid = remotePlayers[i].id + "";
+        var id = localPlayer.getid() + "";
+        if (damage != -1)
+        {
+            try  {
+                DefaultController.peer.raiseEvent(HIT, {
+                    dmg : damage, id : id, enemyid : eid
+                });
+            } catch (err) {
+                DefaultController.output("errorHit: " + err.message + "; dmg: " + damage);
+            }
+        }
+        else if (damage == 0)
+        {
+            try  {
+                DefaultController.peer.raiseEvent(HIT, {
+                    dmg : 0, id : id, enemyid : eid
+                });
+            } catch (err) {
+                DefaultController.output("errorHit: " + err.message + "; dmg: " + damage);
+            }
+        }
     };
     
     ctx.clearRect(0, 0, c.width, c.height);
@@ -526,15 +582,27 @@ function drawWorld() {
                 ctx.drawImage(imageObj, x * 50, y * 50);
             }
         }
-    }
+    }    
+    
+    ctx.drawImage(imageHB, 0, 0, 10, 10, localPlayer.getX() + localPlayer.getcharW()/2 - 50, localPlayer.getY() - 15, 100, 10);
+    ctx.drawImage(imageHB, 0, 16, 10, 10, localPlayer.getX() + localPlayer.getcharW()/2 - 50, localPlayer.getY() - 15, localPlayer.getcurrHealth(), 10);
+
+    for (i = 0; i < remotePlayers.length; i++) {
+        ctx.drawImage(imageHB, 0, 0, 10, 10, remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - 50, remotePlayers[i].getY() - 15, 100, 10);
+        ctx.drawImage(imageHB, 0, 16, 10, 10, remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - 50, remotePlayers[i].getY() - 15, remotePlayers[i].getcurrHealth(), 10);
+    };
+    
     writeMessage();
 };
 
 function writeMessage() {
     ctx.fillText(localPlayer.getX() + " " + localPlayer.getY(), 10, 25);
-//    ctx.fillText(localPlayer.getinAir(), 10, 55);
-//    ctx.fillText(inputMsg, 10, 85);
+    ctx.fillText(localPlayer.getattacking(), 10, 50);
     ctx.fillText(localPlayer.getname(), localPlayer.getX() + localPlayer.getdX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 5 + localPlayer.getdY());
+
+    for (i = 0; i < remotePlayers.length; i++) {
+        ctx.fillText(remotePlayers[i].getname(), remotePlayers[i].getX() + remotePlayers[i].getdX() + remotePlayers[i].getcharW()/2 - (6*remotePlayers[i].getname().length), remotePlayers[i].getY() - 5 + remotePlayers[i].getdY());
+    };
 }
 
 function getMousePos(c, evt) {
@@ -601,6 +669,15 @@ var DefaultController = (function () {
                     name = String(input.value).substring(6, String(input.value).length);
                 }
                 localPlayer.setname(name);
+                try  {
+                    DefaultController.peer.raiseEvent(NAME, {
+                        id : localPlayer.getid(), x : localPlayer.getX(), y : localPlayer.getY(), name : name
+                    });
+                    DefaultController.output('name me[' + DefaultController.peer.myActor().photonId + ']: ' + name);
+//                    localPlayer.id = Date.now();
+                } catch (err) {
+                    DefaultController.output("errorName: " + err.message);
+                }
             }
             else
             {
@@ -609,6 +686,7 @@ var DefaultController = (function () {
                         message: String(input.value)
                     });
                     DefaultController.output('me[' + DefaultController.peer.myActor().photonId + ']: ' + input.value);
+//                    localPlayer.id = Date.now();
                 } catch (err) {
                     DefaultController.output("error565: " + err.message);
                 }
@@ -632,13 +710,13 @@ var DefaultController = (function () {
             DefaultController.peer.join('DemoChat');
         });
         DefaultController.peer.addResponseListener(Photon.Lite.Constants.LiteOpCode.Join, function (e) {
-            localPlayer.id = e.actorNr;
             DefaultController.output('I joined with id: [' + e.actorNr + '].');
+            localPlayer.setid(e.actorNr);
         });
         DefaultController.peer.addEventListener(Photon.Lite.Constants.LiteEventCode.Join, function (e) {
             for(var i = 0; i < e.newActors.length; i++) {
                 if(e.newActors[i] != DefaultController.peer.myActor().photonId) {
-                    onNewPlayer({id: e.actorNr, x: 400, y: 200});
+                    onNewPlayer({id: e.newActors[i], x: 400, y: 200});
                     DefaultController.output('actor[' + e.newActors[i] + '] joined!');
                 }
             }
@@ -692,7 +770,14 @@ var DefaultController = (function () {
             var datax  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].x;
             var datay  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].y;
             var dataname = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].name;
-            onNamePlayer({id : dataid, x : datax, y : datay, jp : dataname});
+            onNamePlayer({id : dataid, x : datax, y : datay, name : dataname});
+            DefaultController.output('actor[' + actorNr + '] - named: ' + dataname);
+        });
+        DefaultController.peer.addEventListener(HIT, function (data) {
+            var datadmg = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].dmg;
+            var dataid  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
+            var dataenemyid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].enemyid;
+            onHitPlayer({dmg : datadmg, eid : dataid, id : dataenemyid});
         });
         DefaultController.peer.connect();
     };
