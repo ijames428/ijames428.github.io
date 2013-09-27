@@ -516,24 +516,6 @@ function updateMovement(player)
         player.setX(Math.floor(player.getX() + player.getdX() * player.getspd()));
         if (player.getinAir())
             player.setY(player.getY() + player.getdY());
-        
-//        if (player.getX() < cameraMoveRegionX + cameraOffsetX || player.getX() > cameraMoveRegionX + cameraMoveRegionW + cameraOffsetX)
-//        {
-//            cameraOffsetX = player.getdX() * player.getspd();
-//        }
-//        if (player.getY() < cameraMoveRegionY + cameraOffsetY || player.getY() > cameraMoveRegionY + cameraMoveRegionH + cameraOffsetY)
-//        {
-//            cameraOffsetY = player.getdY() * player.getspd();
-//        }
-        
-//        if (player.getX() < 10 || player.getX() > 1270)
-//        {
-//            cameraOffsetX = player.getdX() * player.getspd();
-//        }
-//        if (player.getY() < 10 || player.getY() > 710)
-//        {
-//            cameraOffsetY = player.getdY();
-//        }
     }
 }
 
@@ -667,10 +649,6 @@ function drawWorld() {
                 localPlayer.getcharH() + 50);//right
     }
     
-//    ctx.save();
-//    ctx.rect(localPlayer.getX() + localPlayer.getcharW()/2,localPlayer.getY(),200,localPlayer.getcharH());
-//    ctx.clip();
-    
     var i;
 
     for (i = 0; i < remotePlayers.length; i++) {
@@ -682,8 +660,6 @@ function drawWorld() {
         ctx.drawImage(imageHB, 0, 0, 10, 10, remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - 50, remotePlayers[i].getY() - 15, 100, 10);
         ctx.drawImage(imageHB, 0, 16, 10, 10, remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - 50, remotePlayers[i].getY() - 15, remotePlayers[i].getcurrHealth(), 10);
     };
-    
-//    ctx.restore();
     
     writeMessage();
 };
