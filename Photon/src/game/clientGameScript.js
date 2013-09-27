@@ -6,23 +6,40 @@ var localPlayer,                // Local player
     
 var development = true;
 
-var level = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
+var level = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+             [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0],
+             [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
 var txt = "";
 var c = document.getElementById("myCanvas");
-c.height = level.length * 50;
-c.width = level[0].length * 50;
+c.height = 720;//level.length * 50;
+c.width = 1280;//level[0].length * 50;
 var ctx = c.getContext("2d");
 ctx.font = '18pt Calibri';
 ctx.fillStyle = 'white';
@@ -40,6 +57,15 @@ var midBoxX = 0;
 var midBoxY = 0;
 var lastHeartBeat = Date.now();
 var localID = -1;
+var cameraMoveRegionX = 300;
+var cameraMoveRegionY = 200;
+var cameraMoveRegionW = c.height - (cameraMoveRegionX * 2);
+var cameraMoveRegionH = c.width - (cameraMoveRegionY * 2);
+var cameraOffsetX = 0;
+var cameraOffsetY = 0;
+        
+var oldX = 0;
+var oldY = 0;
 
 var RIGHT = 3;
 var LEFT = 4;
@@ -156,6 +182,8 @@ function onKeydown(e) {
             break;
         case 32://SPACE_BAR
             inputMsg = "SPACE";
+            e.preventDefault();
+            e.stopPropagation();
             if (!localPlayer.getinAir())
             {
                 localPlayer.setinAir(true);
@@ -405,6 +433,13 @@ function animate() {
 function update() {
     stats.begin();
     
+    ctx.translate(cameraOffsetX, cameraOffsetY);
+    cameraOffsetX = 0;
+    cameraOffsetY = 0;
+    
+    oldX = localPlayer.getX();
+    oldY = localPlayer.getY();
+    
     updateMovement(localPlayer);
     
     for (i = 0; i < remotePlayers.length; i++) {
@@ -434,8 +469,11 @@ function update() {
         }
     };
     
-    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.clearRect(-600, -600, level[0].length * 50 + 1600, level.length * 50 + 1600);
     drawWorld();
+    
+    cameraOffsetX = oldX - localPlayer.getX();
+    cameraOffsetY = oldY - localPlayer.getY();
 
     stats.end();
 };
@@ -472,24 +510,37 @@ function updateMovement(player)
 
 //    localPlayer.setdX(Math.floor(localPlayer.getdX() * 100) / 100);
 //    localPlayer.setdY(Math.floor(localPlayer.getdY() * 100) / 100);
+    
+    if (!player.getdead())
+    {
+        player.setX(Math.floor(player.getX() + player.getdX() * player.getspd()));
+        if (player.getinAir())
+            player.setY(player.getY() + player.getdY());
         
-    player.setX(Math.floor(player.getX() + player.getdX() * player.getspd()));
-    if (player.getinAir())
-        player.setY(player.getY() + player.getdY());
-
-//    if (lastHeartBeat + 200 < Date.now())
-//    {
-//        try  {
-//            DefaultController.peer.raiseEvent(2, {
-//                id: player.getid(), x: player.getX(), y: player.getY()
-//            });
-//            DefaultController.output("sent HB");
-//        } catch (err) {
-//            DefaultController.output("error392: " + err.message);
+//        if (player.getX() < cameraMoveRegionX + cameraOffsetX || player.getX() > cameraMoveRegionX + cameraMoveRegionW + cameraOffsetX)
+//        {
+//            cameraOffsetX = player.getdX() * player.getspd();
 //        }
-//        lastHeartBeat = Date.now();
-//    }
+//        if (player.getY() < cameraMoveRegionY + cameraOffsetY || player.getY() > cameraMoveRegionY + cameraMoveRegionH + cameraOffsetY)
+//        {
+//            cameraOffsetY = player.getdY() * player.getspd();
+//        }
+        
+//        if (player.getX() < 10 || player.getX() > 1270)
+//        {
+//            cameraOffsetX = player.getdX() * player.getspd();
+//        }
+//        if (player.getY() < 10 || player.getY() > 710)
+//        {
+//            cameraOffsetY = player.getdY();
+//        }
+    }
 }
+
+function MoveCamera()
+{
+    
+};
 
 function CheckCollision(player) {
     if (player.getX() - 1 * player.getspd() < 0)
@@ -501,12 +552,12 @@ function CheckCollision(player) {
     {
         player.setY(0);
     }
-    if (player.getX() + 1 * player.getspd() > c.width - player.getcharW())
+    if (player.getX() + 1 * player.getspd() > level[0].length * 50 - player.getcharW())
     {
         if (player.getdX() > 0)
             player.setdX(0);
     }
-    if (player.getY() - 1 * player.getspd() > c.height - player.getcharH())
+    if (player.getY() - 1 * player.getspd() > level.length * 50 - player.getcharH())
     {
         player.setY(c.height - player.getcharH());
     }
@@ -582,26 +633,68 @@ function drawWorld() {
                 ctx.drawImage(imageObj, x * 50, y * 50);
             }
         }
-    }    
+    } 
     
+    ctx.fillStyle="#000000";
+    ctx.fillRect(localPlayer.getX() + localPlayer.getcharW()/2 - 52, localPlayer.getY() - 17, 104, 14);
     ctx.drawImage(imageHB, 0, 0, 10, 10, localPlayer.getX() + localPlayer.getcharW()/2 - 50, localPlayer.getY() - 15, 100, 10);
     ctx.drawImage(imageHB, 0, 16, 10, 10, localPlayer.getX() + localPlayer.getcharW()/2 - 50, localPlayer.getY() - 15, localPlayer.getcurrHealth(), 10);
+    
+    localPlayer.draw(ctx);
+    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.fillRect(0, 0, level[0].length * 50, localPlayer.getY()-40);//above
+    ctx.fillRect(0, localPlayer.getY() + localPlayer.getcharH()+10, level[0].length * 50, level[0].length * 50-localPlayer.getY() + localPlayer.getcharH());//below
+    if (localPlayer.getright())
+    {
+        ctx.fillRect(0, 
+                localPlayer.getY() - 40, 
+                localPlayer.getX(), 
+                localPlayer.getcharH() + 50);//left
+        ctx.fillRect(localPlayer.getX() + localPlayer.getcharW() + 400, 
+                localPlayer.getY() - 40, 
+                level[0].length * 50 - (localPlayer.getX() + localPlayer.getcharW() + 400), 
+                localPlayer.getcharH() + 50);//right
+    }
+    else
+    {
+        ctx.fillRect(0, 
+                localPlayer.getY() - 40, 
+                localPlayer.getX() - 400, 
+                localPlayer.getcharH() + 50);//left
+        ctx.fillRect(localPlayer.getX() + localPlayer.getcharW(), 
+                localPlayer.getY() - 40, 
+                level[0].length * 50 - (localPlayer.getX() + localPlayer.getcharW()), 
+                localPlayer.getcharH() + 50);//right
+    }
+    
+//    ctx.save();
+//    ctx.rect(localPlayer.getX() + localPlayer.getcharW()/2,localPlayer.getY(),200,localPlayer.getcharH());
+//    ctx.clip();
+    
+    var i;
 
     for (i = 0; i < remotePlayers.length; i++) {
+        remotePlayers[i].draw(ctx);
+    };
+    
+    for (i = 0; i < remotePlayers.length; i++) {
+        ctx.fillRect(remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - 52, remotePlayers[i].getY() - 17, 104, 14);
         ctx.drawImage(imageHB, 0, 0, 10, 10, remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - 50, remotePlayers[i].getY() - 15, 100, 10);
         ctx.drawImage(imageHB, 0, 16, 10, 10, remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - 50, remotePlayers[i].getY() - 15, remotePlayers[i].getcurrHealth(), 10);
     };
+    
+//    ctx.restore();
     
     writeMessage();
 };
 
 function writeMessage() {
-    ctx.fillText(localPlayer.getX() + " " + localPlayer.getY(), 10, 25);
-    ctx.fillText(localPlayer.getattacking(), 10, 50);
-    ctx.fillText(localPlayer.getname(), localPlayer.getX() + localPlayer.getdX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 5 + localPlayer.getdY());
+    ctx.fillStyle="#FFFFFF";
+//    ctx.fillText(localPlayer.getX() + " " + localPlayer.getY(), 10, 25);
+    ctx.fillText(localPlayer.getname(), localPlayer.getX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 20);
 
     for (i = 0; i < remotePlayers.length; i++) {
-        ctx.fillText(remotePlayers[i].getname(), remotePlayers[i].getX() + remotePlayers[i].getdX() + remotePlayers[i].getcharW()/2 - (6*remotePlayers[i].getname().length), remotePlayers[i].getY() - 5 + remotePlayers[i].getdY());
+        ctx.fillText(remotePlayers[i].getname(), remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - (6*remotePlayers[i].getname().length), remotePlayers[i].getY() - 20);
     };
 }
 
@@ -635,13 +728,6 @@ function playerById(id) {
 **************************************************/
 function draw() {
     // Draw the local player
-    localPlayer.draw(ctx);
-    
-    var i;
-
-    for (i = 0; i < remotePlayers.length; i++) {
-        remotePlayers[i].draw(ctx);
-    };
 };
 
 /// <reference path="Photon/Photon-Javascript_SDK.d.ts"/>
@@ -653,7 +739,7 @@ var DefaultController = (function () {
         this.logger.info("Setting up UI.");
         var input = document.getElementById("input");
         input.value = 'hello';
-        input.focus();
+//        input.focus();
         var form = document.getElementById("mainfrm");
         form.onsubmit = function () {
             var input = document.getElementById("input");

@@ -88,15 +88,18 @@ var Player = function(startX, startY, imgSrc) {
     
     var TakeDamage = function(dmg) 
     {
-        if (currHealth - dmg > 0)
-            currHealth -= dmg;
-        else
+        if (!dead)
         {
-            currHealth = 0;
-            dead = true;
-            deathTime = Date.now();
+            if (currHealth - dmg > 0)
+                currHealth -= dmg;
+            else
+            {
+                currHealth = 0;
+                dead = true;
+                deathTime = Date.now();
+            }
         }
-    }
+    };
     
     var DidAttackHit = function(enemy)
     {
