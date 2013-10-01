@@ -51,6 +51,8 @@ var imageObj = new Image();
 imageObj.src = 'http://i.imgur.com/nVINE2F.png';
 var imageHB = new Image();
 imageHB.src = "http://i.imgur.com/dpHHAIC.png";
+var imageCH = new Image();
+imageCH.src = "https://si0.twimg.com/profile_images/1207225546/crosshairs_normal.png";
 var midCharX = 0;
 var midCharY = 0;
 var midBoxX = 0;
@@ -63,6 +65,11 @@ var cameraMoveRegionW = c.height - (cameraMoveRegionX * 2);
 var cameraMoveRegionH = c.width - (cameraMoveRegionY * 2);
 var cameraOffsetX = 0;
 var cameraOffsetY = 0;
+var mousePos = {x:0,y:0};
+var origin = {x:0,y:0};
+var damage = "";
+var eid = "";
+var id = "";
         
 var oldX = 0;
 var oldY = 0;
@@ -73,7 +80,8 @@ var NEUTRAL = 5;
 var JUMP = 6;
 var NAME = 7;
 var HIT = 8;
-var ATTACK = 9;
+var FIREBALL = 10;
+var THROW = 11;
 
 var distX = midCharX - midBoxX;
 var distY = midCharY - midBoxY;
@@ -81,6 +89,29 @@ var distY = midCharY - midBoxY;
 var stats = new Stats();
 stats.setMode(2);
 document.body.appendChild(stats.domElement);
+
+var enemyVec;
+var dist;
+var bulletTrajectory;
+
+function vec_mag(vec) { // get the magnitude of the vector
+  return Math.sqrt(vec.x * vec.x + vec.y * vec.y); 
+}
+function vec_sub(a,b) { // subtract two vectors
+  return { x: a.x-b.x, y: a.y-b.y };
+}
+function vec_add(a,b) { // add two vectors
+  return { x: a.x + b.x, y: a.y + b.y };
+}
+function vec_mul(a,c) { // multiply a vector by a scalar
+  return { x: a.x * c, y: a.y * c };
+}
+function vec_div(a,c) { // divide == multiply by 1/c
+  return vec_mul(a, 1.0/c);
+}
+function vec_normal(a) { // normalize vector
+  return vec_div(a, vec_mag(a)); 
+}
 
 
 /**************************************************
@@ -307,6 +338,17 @@ function onNewPlayer(data) {
     remotePlayers.push(newPlayer);
 };
 
+function onRemovePlayer(data)
+{
+    var removePlayer = playerById(data.id);
+    
+    for (i = 0; i < remotePlayers.length; i++)
+    {
+        if (removePlayer.getid() == remotePlayers[i].getid())
+            remotePlayers.splice(i,1);
+    }
+}
+
 function onMovePlayerRight(data) {
     var movePlayer = playerById(data.id);
 
@@ -390,6 +432,45 @@ function onNamePlayer(data) {
     namePlayer.setname(data.name);
 };
 
+function onHitPlayerWithFireball(data) {
+    var attackingPlayer = playerById(parseInt(data.eid));
+    
+    if (!attackingPlayer) {
+        console.log("attackingPlayer not found: " + data.eid);
+    }
+    else
+    {
+        var fb = attackingPlayer.getfireball();
+        fb.active = false;
+        attackingPlayer.setfireball(fb);
+    }
+    
+    if (localPlayer.getid() == parseInt(data.id))
+    {
+        localPlayer.TakeDamage(parseInt(data.dmg));
+    }
+    else
+    {
+        var hitPlayer = playerById(parseInt(data.id));
+        if (!hitPlayer) {
+            DefaultController.output("hitPlayer not found: " + data.id);
+        }
+        hitPlayer.TakeDamage(parseInt(data.dmg));
+    }
+};
+
+function onPlayerThrewFireball(data) {
+    var attackingPlayer = playerById(parseInt(data.eid));
+    
+    if (!attackingPlayer) {
+        console.log("attackingPlayer not found: " + data.eid);
+    }
+    else
+    {
+        ThrowProjectileAt(attackingPlayer, ({x: data.mx, y: data.my}));
+    }
+};
+
 function onHitPlayer(data) {
     var attackingPlayer = playerById(parseInt(data.eid));
     
@@ -444,11 +525,11 @@ function update() {
     
     for (i = 0; i < remotePlayers.length; i++) {
         updateMovement(remotePlayers[i]);
-        var damage = localPlayer.DidAttackHit(remotePlayers[i]) + "";
-        var eid = remotePlayers[i].id + "";
-        var id = localPlayer.getid() + "";
+        damage = localPlayer.DidAttackHit(remotePlayers[i]) + "";
         if (damage != -1)
         {
+            eid = remotePlayers[i].id + "";
+            id = localPlayer.getid() + "";
             try  {
                 DefaultController.peer.raiseEvent(HIT, {
                     dmg : damage, id : id, enemyid : eid
@@ -459,6 +540,8 @@ function update() {
         }
         else if (damage == 0)
         {
+            eid = remotePlayers[i].id + "";
+            id = localPlayer.getid() + "";
             try  {
                 DefaultController.peer.raiseEvent(HIT, {
                     dmg : 0, id : id, enemyid : eid
@@ -517,12 +600,43 @@ function updateMovement(player)
         if (player.getinAir())
             player.setY(player.getY() + player.getdY());
     }
-}
-
-function MoveCamera()
-{
     
-};
+    if (player.getfireball().active)
+    {
+        player.getfireball().x += player.getfireball().dx;
+        player.getfireball().y += player.getfireball().dy;
+        
+        for (i = 0; i < remotePlayers.length; i++)
+        {
+            if ((player.getfireball().x >= remotePlayers[i].getX() && player.getfireball().x <= remotePlayers[i].getX() + remotePlayers[i].getcharW()) &&
+                (player.getfireball().y >= remotePlayers[i].getY() && player.getfireball().y <= remotePlayers[i].getY() + remotePlayers[i].getcharH()))
+            {
+//            if (vec_mag(vec_sub({x:remotePlayers[i].getX(), y:remotePlayers[i].getY()}, {x:player.getfireball().x, y:player.getfireball().y})) >= remotePlayers[i].getCharW())
+//            {
+                if (player.getid() == remotePlayers[i].getid())
+                    continue;
+                player.getfireball().active = false;
+                remotePlayers[i].TakeDamage(5);
+                damage = 5 + "";
+                eid = remotePlayers[i].id + "";
+                id = player.getid() + "";
+                
+                try  {
+                    DefaultController.peer.raiseEvent(FIREBALL, {
+                        dmg : damage, id : id, enemyid : eid
+                    });
+                } catch (err) {
+                    DefaultController.output("errorHit: " + err.message + "; dmg: " + damage);
+                }
+                
+                break;
+            }
+        };
+        
+        if (vec_mag(vec_sub(origin, {x:player.getfireball().x, y:player.getfireball().y})) >= player.getfireball().rng)
+            player.getfireball().active = false;
+    }
+}
 
 function CheckCollision(player) {
     if (player.getX() - 1 * player.getspd() < 0)
@@ -661,13 +775,16 @@ function drawWorld() {
         ctx.drawImage(imageHB, 0, 16, 10, 10, remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - 50, remotePlayers[i].getY() - 15, remotePlayers[i].getcurrHealth(), 10);
     };
     
+//    if (localPlayer.getfireball().active)
+//        ctx.drawImage(imageFB, localPlayer.getfireball().x, localPlayer.getfireball().y, 10, 10);
+    
     writeMessage();
 };
 
 function writeMessage() {
     ctx.fillStyle="#FFFFFF";
 //    ctx.fillText(localPlayer.getX() + " " + localPlayer.getY(), 10, 25);
-    ctx.fillText(localPlayer.getname(), localPlayer.getX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 20);
+    ctx.fillText(message, localPlayer.getX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 20);
 
     for (i = 0; i < remotePlayers.length; i++) {
         ctx.fillText(remotePlayers[i].getname(), remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - (6*remotePlayers[i].getname().length), remotePlayers[i].getY() - 20);
@@ -682,8 +799,56 @@ function getMousePos(c, evt) {
     };
 }
 
+c.onclick = function() {
+    ThrowProjectile(localPlayer);
+};
+
+function ThrowProjectile(player)
+{
+    if (!player.getfireball().active)
+    {
+        player.getfireball().active = true;
+        player.getfireball().x = player.getX();
+        player.getfireball().y = player.getY();
+        enemyVec = vec_sub(mousePos, {x:c.width/2, y:c.height/2});
+        bulletTrajectory = vec_mul(vec_normal(enemyVec), player.getfireball().spd);
+        // assign values
+        player.getfireball().dx = bulletTrajectory.x;
+        player.getfireball().dy = bulletTrajectory.y;
+        
+        origin = {x:player.getX(), y:player.getY()};
+        
+        id = player.getid() + "";
+
+        try  {
+            DefaultController.peer.raiseEvent(THROW, {
+                id : id, mx: mousePos.x, my: mousePos.y
+            });
+        } catch (err) {
+            DefaultController.output("errorHit: " + err.message + "; dmg: " + damage);
+        }
+    }
+}
+
+function ThrowProjectileAt(player, distinationPoint)
+{
+    if (!player.getfireball().active)
+    {
+        player.getfireball().active = true;
+        player.getfireball().x = player.getX();
+        player.getfireball().y = player.getY();
+        enemyVec = vec_sub(distinationPoint, {x:c.width/2, y:c.height/2});
+        bulletTrajectory = vec_mul(vec_normal(enemyVec), player.getfireball().spd);
+        // assign values
+        player.getfireball().dx = bulletTrajectory.x;
+        player.getfireball().dy = bulletTrajectory.y;
+        
+        origin = {x:player.getX(), y:player.getY()};
+    }
+}
+
 c.addEventListener('mousemove', function(evt) {
-    var mousePos = getMousePos(c, evt);
+    mousePos = getMousePos(c, evt);
     message = mousePos.x + ',' + mousePos.y;
 }, false);
 
@@ -704,7 +869,7 @@ function playerById(id) {
 **************************************************/
 function draw() {
     // Draw the local player
-};
+};// this is a "constant"  - representing 10px motion per "time unit"
 
 /// <reference path="Photon/Photon-Javascript_SDK.d.ts"/>
 var PhotonServerAddress = "24.149.29.78:9090";
@@ -785,6 +950,7 @@ var DefaultController = (function () {
         });
         DefaultController.peer.addEventListener(Photon.Lite.Constants.LiteEventCode.Leave, function (e) {
             DefaultController.output('actor[' + e.actorNr + '] left!');
+            onRemovePlayer({id:e.actorNr});
         });
         DefaultController.peer.addEventListener(1, function (data) {
             var text = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].message;// we get JSON back from Photon, the text we pass in by submitMessage() below is passed back here
@@ -840,6 +1006,18 @@ var DefaultController = (function () {
             var dataid  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
             var dataenemyid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].enemyid;
             onHitPlayer({dmg : datadmg, eid : dataid, id : dataenemyid});
+        });
+        DefaultController.peer.addEventListener(FIREBALL, function (data) {
+            var datadmg = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].dmg;
+            var dataid  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
+            var dataenemyid = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].enemyid;
+            onHitPlayerWithFireball({dmg : datadmg, eid : dataid, id : dataenemyid});
+        });
+        DefaultController.peer.addEventListener(THROW, function (data) {
+            var dataid  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
+            var datamx  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].mx;
+            var datamy = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].my;
+            onPlayerThrewFireball({eid : dataid, mx : datamx, my : datamy});
         });
         DefaultController.peer.connect();
     };

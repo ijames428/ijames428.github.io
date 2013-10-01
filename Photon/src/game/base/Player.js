@@ -21,7 +21,7 @@ var Player = function(startX, startY, imgSrc) {
     imgCharLeft.src = "http://i.imgur.com/qG7Auir.gif";
     var imgAtk = new Image();
     var imgAtkRight = new Image();
-    imgAtkRight.src = "http://images4.wikia.nocookie.net/__cb20080809154342/castlevania/images/d/d8/Alu-sword.gif";
+    imgAtkRight.src = "http://i.imgur.com/9Wc6P9M.gif";
     var imgAtkLeft = new Image();
     imgAtkLeft.src = "http://i.imgur.com/W2zoWjc.gif";
     var jumpPower = -11;
@@ -37,9 +37,13 @@ var Player = function(startX, startY, imgSrc) {
     var deathTimer = 5000;
     var deathTime = 0;
     
+    var imageFB = new Image();
+    imageFB.src = "http://images2.wikia.nocookie.net/__cb20111225172543/nitrome/images/8/88/FireballS.png";
+    var fireball = {x:0,y:0,dx:0,dy:0,active:false,spd:30,rng:550};
+    
     var x = startX,
         y = startY,
-        id,
+        id = 0,
         moveAmount = 2;
 
     var getX = function() {return x;};
@@ -64,6 +68,7 @@ var Player = function(startX, startY, imgSrc) {
     var gethitBoxRange = function() { return hitBoxRange; };
     var getdealtDamage = function() { return dealtDamage; };
     var getdead = function() { return dead; };
+    var getfireball = function() { return fireball; };
     var setX = function(newX) {x = newX;};
     var setY = function(newY) {y = newY;};
     var setWdown = function(input) { Wdown = input; };
@@ -78,6 +83,7 @@ var Player = function(startX, startY, imgSrc) {
     var setdY = function(input) { dY = input; };
     var setspd = function(input) { spd = input; };
     var setid = function(input) { id = input; };
+    var setfireball = function(input) { fireball = input; };
     var setjumpPower = function(input) { jumpPower = input; };
     var setmaxHealth = function(input) { maxHealth = input; };
     var setcurrHealth = function(input) { currHealth = input; };
@@ -201,6 +207,9 @@ var Player = function(startX, startY, imgSrc) {
         }
         else
             ctx.drawImage(imgChar, x, y);
+        
+        if (fireball.active)
+            ctx.drawImage(imageFB, fireball.x, fireball.y, 10, 10);
     };
 
     return {
@@ -230,6 +239,7 @@ var Player = function(startX, startY, imgSrc) {
             gethitBoxRange: gethitBoxRange,
             getdealtDamage: getdealtDamage,
             getdead: getdead,
+            getfireball: getfireball,
             setWdown:setWdown,
             setAdown:setAdown,
             setSdown:setSdown,
@@ -251,5 +261,6 @@ var Player = function(startX, startY, imgSrc) {
             DidAttackHit: DidAttackHit,
             TakeDamage: TakeDamage,
             Revive: Revive,
+            setfireball: setfireball,
     };
 };
