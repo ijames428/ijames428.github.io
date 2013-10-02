@@ -24,6 +24,12 @@ var Player = function(startX, startY, imgSrc) {
     imgAtkRight.src = "http://i.imgur.com/9Wc6P9M.gif";
     var imgAtkLeft = new Image();
     imgAtkLeft.src = "http://i.imgur.com/W2zoWjc.gif";
+    var imgRun = new Image();
+    imgRun.src = "http://i27.photobucket.com/albums/c163/RIY/AlucardSpriteSheet.png";
+    var imgRunRight = new Image();
+    imgRunRight.src = "http://i27.photobucket.com/albums/c163/RIY/AlucardSpriteSheet.png";
+    var imgRunLeft = new Image();
+    imgRunLeft.src = "http://s16.postimg.org/9gwxux0n9/Alucard_Sprite_Sheet_Flipped.png"
     var jumpPower = -11;
     var maxHealth = 100;
     var currHealth = 100;
@@ -36,6 +42,24 @@ var Player = function(startX, startY, imgSrc) {
     var damage = 10;
     var deathTimer = 5000;
     var deathTime = 0;
+    var currFrame = 0;
+    var lastFrameChangeTime = Date.now();
+    var runExtracts = [{x:512,y:520},//0
+                       {x:575,y:520},//1
+                       {x:512,y:584},//2
+                       {x:575,y:584},//3
+                       {x:638,y:520},//4
+                       {x:701,y:520},//5
+                       {x:638,y:584},//6
+                       {x:701,y:584},//7
+                       {x:255,y:520},//8
+                       {x:318,y:520},//9
+                       {x:255,y:584},//A
+                       {x:318,y:584},//B
+                       {x:381,y:520},//C
+                       {x:444,y:520},//D
+                       {x:381,y:584},//E
+                       {x:444,y:584}];//F
     
     var imageFB = new Image();
     imageFB.src = "http://images2.wikia.nocookie.net/__cb20111225172543/nitrome/images/8/88/FireballS.png";
@@ -178,12 +202,14 @@ var Player = function(startX, startY, imgSrc) {
             right = true;
             imgChar = imgCharRight;
             imgAtk = imgAtkRight;
+            imgRun = imgRunRight;
         }
         else if (dX < 0)
         {
             right = false;
             imgChar = imgCharLeft;
             imgAtk = imgAtkLeft;
+            imgRun = imgRunLeft;
         }
         if (attacking)
         {
@@ -206,7 +232,61 @@ var Player = function(startX, startY, imgSrc) {
             }
         }
         else
-            ctx.drawImage(imgChar, x, y);
+        {
+            if (dX != 0)
+            {
+                if (lastFrameChangeTime + 62 < Date.now())
+                {
+                    lastFrameChangeTime = Date.now();
+                    currFrame++;
+                    if (currFrame > 15)
+                        currFrame = 0;
+                }
+                if (dY < 0)//up
+                {
+                    if (right)
+                        ctx.drawImage(imgRun, 71, 840, 65, 52, x+charW/2 - 65, y, 63*2, charH);
+                    else
+                        ctx.drawImage(imgRun, 1024-71-63, 840, 63, 48, x+charW/2 - 63, y, 63*2, charH);
+                }
+                else if (dY > 0)//down
+                {
+                    if (right)
+                        ctx.drawImage(imgRun, 128, 830, 60, 65, x+charW/2 - 60, y, 63*2, charH);
+                    else
+                        ctx.drawImage(imgRun, 1024-128-63, 830, 60, 65, x+charW/2 - 60, y, 63*2, charH);
+                }
+                else
+                {
+                    if (right)
+                        ctx.drawImage(imgRun, runExtracts[currFrame].x, runExtracts[currFrame].y, 63, 48, x+charW/2 - 60, y, 63*2, charH);
+                    else
+                        ctx.drawImage(imgRun, 1024-runExtracts[currFrame].x-63, runExtracts[currFrame].y, 63, 48, x+charW/2 - 60, y, 63*2, charH);
+                }
+            }
+            else if (dY < 0)//up
+            {
+                if (right)
+                    ctx.drawImage(imgRun, 71, 840, 65, 52, x+charW/2 - 60, y, 63*2, charH);
+                else
+                    ctx.drawImage(imgRun, 1024-71-63, 840, 63, 48, x+charW/2 - 60, y, 63*2, charH);
+            }
+            else if (dY > 0)//down
+            {
+                if (right)
+                    ctx.drawImage(imgRun, 128, 830, 60, 65, x+charW/2 - 60, y, 63*2, charH);
+                else
+                    ctx.drawImage(imgRun, 1024-128-63, 830, 60, 65, x+charW/2 - 60, y, 63*2, charH);
+            }
+            else
+            {
+                currFrame = 0;
+                if (right)
+                    ctx.drawImage(imgRun, 29, 8, 25, 48, x+charW/2 - 25, y, 25*2, charH);
+                else
+                    ctx.drawImage(imgRun, 1024-29-25, 8, 25, 48, x+charW/2 - 25, y, 25*2, charH);
+            }
+        }
         
         if (fireball.active)
             ctx.drawImage(imageFB, fireball.x, fireball.y, 10, 10);

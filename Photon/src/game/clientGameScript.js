@@ -70,6 +70,7 @@ var origin = {x:0,y:0};
 var damage = "";
 var eid = "";
 var id = "";
+var lightsOff = true;
         
 var oldX = 0;
 var oldY = 0;
@@ -175,6 +176,7 @@ function onKeydown(e) {
             break;
         case 52://4
             inputMsg = "4";
+            lightsOff = !lightsOff;
             break;
         case 65://A
             inputMsg = "A";
@@ -213,21 +215,31 @@ function onKeydown(e) {
             break;
         case 32://SPACE_BAR
             inputMsg = "SPACE";
-            e.preventDefault();
-            e.stopPropagation();
-            if (!localPlayer.getinAir())
+            if (document.getElementById("input").value == "")
             {
-                localPlayer.setinAir(true);
-                localPlayer.setdY(localPlayer.getjumpPower());
+                e.preventDefault();
+                e.stopPropagation();
                 
-                try {
-                    DefaultController.peer.raiseEvent(JUMP, {
-                        id: localPlayer.getid(), x: localPlayer.getX(), y: localPlayer.getY(), jp: localPlayer.getjumpPower()
-                    });
-                } catch (err) {
-                    DefaultController.output("error145: " + err.message);
+                if (!localPlayer.getinAir())
+                {
+                    localPlayer.setinAir(true);
+                    localPlayer.setdY(localPlayer.getjumpPower());
+
+                    try {
+                        DefaultController.peer.raiseEvent(JUMP, {
+                            id: localPlayer.getid(), x: localPlayer.getX(), y: localPlayer.getY(), jp: localPlayer.getjumpPower()
+                        });
+                    } catch (err) {
+                        DefaultController.output("error145: " + err.message);
+                    }
                 }
             }
+            break;
+        case 27://ESCAPE
+            document.getElementById("input").value = "";
+            break;
+        case 13://RETURN
+            document.getElementById("input").focus();
             break;
     }
 };
@@ -719,7 +731,14 @@ function CheckCollision(player) {
 };
 
 function drawWorld() {
-    ctx.drawImage(imageBG, c.width / 2 - 960, c.height / 2 - 400);
+//    ctx.drawImage(imageBG, c.width / 2 - 960, c.height / 2 - 400);
+    ctx.fillStyle = "rgba(255, 153, 51, 1)";
+    ctx.fillRect(0, 0, level[0].length * 50/3, level.length * 50);//above
+    ctx.fillStyle = "rgba(192, 192, 192, 1)";
+    ctx.fillRect(level[0].length * 50/3, 0, level[0].length * 50/3, level.length * 50);//above
+    ctx.fillStyle = "rgba(0, 255, 255, 1)";
+    ctx.fillRect(level[0].length * 50/3*2, 0, level[0].length * 50/3, level.length * 50);//above
+    
     for (x = 0; x < level[0].length; x++)
     {
         for (y = 0; y < level.length; y++)
@@ -731,49 +750,82 @@ function drawWorld() {
         }
     } 
     
+    if (lightsOff)
+    {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+        ctx.fillRect(0, 0, level[0].length * 50, level.length * 50);//above
+    }
+    
     ctx.fillStyle="#000000";
     ctx.fillRect(localPlayer.getX() + localPlayer.getcharW()/2 - 52, localPlayer.getY() - 17, 104, 14);
     ctx.drawImage(imageHB, 0, 0, 10, 10, localPlayer.getX() + localPlayer.getcharW()/2 - 50, localPlayer.getY() - 15, 100, 10);
     ctx.drawImage(imageHB, 0, 16, 10, 10, localPlayer.getX() + localPlayer.getcharW()/2 - 50, localPlayer.getY() - 15, localPlayer.getcurrHealth(), 10);
     
     localPlayer.draw(ctx);
-    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-    ctx.fillRect(0, 0, level[0].length * 50, localPlayer.getY()-40);//above
-    ctx.fillRect(0, localPlayer.getY() + localPlayer.getcharH()+10, level[0].length * 50, level[0].length * 50-localPlayer.getY() + localPlayer.getcharH());//below
-    if (localPlayer.getright())
-    {
-        ctx.fillRect(0, 
-                localPlayer.getY() - 40, 
-                localPlayer.getX(), 
-                localPlayer.getcharH() + 50);//left
-        ctx.fillRect(localPlayer.getX() + localPlayer.getcharW() + 400, 
-                localPlayer.getY() - 40, 
-                level[0].length * 50 - (localPlayer.getX() + localPlayer.getcharW() + 400), 
-                localPlayer.getcharH() + 50);//right
-    }
-    else
-    {
-        ctx.fillRect(0, 
-                localPlayer.getY() - 40, 
-                localPlayer.getX() - 400, 
-                localPlayer.getcharH() + 50);//left
-        ctx.fillRect(localPlayer.getX() + localPlayer.getcharW(), 
-                localPlayer.getY() - 40, 
-                level[0].length * 50 - (localPlayer.getX() + localPlayer.getcharW()), 
-                localPlayer.getcharH() + 50);//right
-    }
+//    ctx.fillRect(0, localPlayer.getY() + localPlayer.getcharH()+10, level[0].length * 50, level[0].length * 50-localPlayer.getY() + localPlayer.getcharH());//below
+//    if (localPlayer.getright())
+//    {
+//        ctx.fillRect(0, 
+//                localPlayer.getY() - 40, 
+//                localPlayer.getX(), 
+//                localPlayer.getcharH() + 50);//left
+//        ctx.fillRect(localPlayer.getX() + localPlayer.getcharW() + 400, 
+//                localPlayer.getY() - 40, 
+//                level[0].length * 50 - (localPlayer.getX() + localPlayer.getcharW() + 400), 
+//                localPlayer.getcharH() + 50);//right
+//    }
+//    else
+//    {
+//        ctx.fillRect(0, 
+//                localPlayer.getY() - 40, 
+//                localPlayer.getX() - 400, 
+//                localPlayer.getcharH() + 50);//left
+//        ctx.fillRect(localPlayer.getX() + localPlayer.getcharW(), 
+//                localPlayer.getY() - 40, 
+//                level[0].length * 50 - (localPlayer.getX() + localPlayer.getcharW()), 
+//                localPlayer.getcharH() + 50);//right
+//    }
     
     var i;
+     
+    if (lightsOff)
+    { 
+        ctx.save();
+        ctx.beginPath();
 
+        enemyVec = vec_sub(mousePos, {x:c.width/2, y:c.height/2});
+        lightTrajectory = vec_mul(vec_normal(enemyVec), 2);
+
+        ctx.fillStyle = "rgba(255, 255, 153, 0.5)";
+        ctx.arc(localPlayer.getX()+localPlayer.getcharW()/2 + (100 * lightTrajectory.x), localPlayer.getY() + localPlayer.getcharH()/3 + (100 * lightTrajectory.y), 50, 0, 2 * Math.PI, false);
+        ctx.arc(localPlayer.getX()+localPlayer.getcharW()/2 + (80 * lightTrajectory.x), localPlayer.getY() + localPlayer.getcharH()/3 + (80 * lightTrajectory.y), 43, 0, 2 * Math.PI, false);
+        ctx.arc(localPlayer.getX()+localPlayer.getcharW()/2 + (60 * lightTrajectory.x), localPlayer.getY() + localPlayer.getcharH()/3 + (60 * lightTrajectory.y), 36, 0, 2 * Math.PI, false);
+        ctx.arc(localPlayer.getX()+localPlayer.getcharW()/2 + (40 * lightTrajectory.x), localPlayer.getY() + localPlayer.getcharH()/3 + (40 * lightTrajectory.y), 28, 0, 2 * Math.PI, false);
+        ctx.arc(localPlayer.getX()+localPlayer.getcharW()/2 + (20 * lightTrajectory.x), localPlayer.getY() + localPlayer.getcharH()/3 + (20 * lightTrajectory.y), 20, 0, 2 * Math.PI, false);
+        ctx.closePath();
+        ctx.clip();
+    }
+    
     for (i = 0; i < remotePlayers.length; i++) {
         remotePlayers[i].draw(ctx);
     };
     
+    if (lightsOff)
+    {
+        ctx.fill();
+    }
+    
+    ctx.fillStyle="#000000";
     for (i = 0; i < remotePlayers.length; i++) {
         ctx.fillRect(remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - 52, remotePlayers[i].getY() - 17, 104, 14);
         ctx.drawImage(imageHB, 0, 0, 10, 10, remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - 50, remotePlayers[i].getY() - 15, 100, 10);
         ctx.drawImage(imageHB, 0, 16, 10, 10, remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - 50, remotePlayers[i].getY() - 15, remotePlayers[i].getcurrHealth(), 10);
     };
+    
+    if (lightsOff)
+    {
+        ctx.restore();
+    }
     
 //    if (localPlayer.getfireball().active)
 //        ctx.drawImage(imageFB, localPlayer.getfireball().x, localPlayer.getfireball().y, 10, 10);
@@ -784,7 +836,7 @@ function drawWorld() {
 function writeMessage() {
     ctx.fillStyle="#FFFFFF";
 //    ctx.fillText(localPlayer.getX() + " " + localPlayer.getY(), 10, 25);
-    ctx.fillText(message, localPlayer.getX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 20);
+    ctx.fillText(localPlayer.getname(), localPlayer.getX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 20);
 
     for (i = 0; i < remotePlayers.length; i++) {
         ctx.fillText(remotePlayers[i].getname(), remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - (6*remotePlayers[i].getname().length), remotePlayers[i].getY() - 20);
@@ -816,7 +868,7 @@ function ThrowProjectile(player)
         player.getfireball().dx = bulletTrajectory.x;
         player.getfireball().dy = bulletTrajectory.y;
         
-        origin = {x:player.getX(), y:player.getY()};
+        origin = {x:player.getX() + player.getcharW()/2, y:player.getY() + player.getcharH()/2};
         
         id = player.getid() + "";
 
@@ -879,7 +931,7 @@ var DefaultController = (function () {
     DefaultController.setupUI = function setupUI() {
         this.logger.info("Setting up UI.");
         var input = document.getElementById("input");
-        input.value = 'hello';
+        input.value = '';
 //        input.focus();
         var form = document.getElementById("mainfrm");
         form.onsubmit = function () {
