@@ -282,9 +282,9 @@ var Player = function(startX, startY, imgSrc) {
             {
                 currFrame = 0;
                 if (right)
-                    ctx.drawImage(imgRun, 29, 8, 25, 48, x+charW/2 - 25, y, 25*2, charH);
+                    ctx.drawImage(imgRun, 29, 8, 25, 48, x+charW/2 - 25, y, 26*2, charH);
                 else
-                    ctx.drawImage(imgRun, 1024-29-25, 8, 25, 48, x+charW/2 - 25, y, 25*2, charH);
+                    ctx.drawImage(imgRun, 1024-29-25, 8, 25, 48, x+charW/2 - 25, y, 26*2, charH);
             }
         }
         

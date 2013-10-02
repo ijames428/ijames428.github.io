@@ -59,20 +59,20 @@ var midBoxX = 0;
 var midBoxY = 0;
 var lastHeartBeat = Date.now();
 var localID = -1;
+var startX = 400,
+    startY = 500;
 var cameraMoveRegionX = 300;
 var cameraMoveRegionY = 200;
-var cameraMoveRegionW = c.height - (cameraMoveRegionX * 2);
-var cameraMoveRegionH = c.width - (cameraMoveRegionY * 2);
-var cameraOffsetX = 0;
-var cameraOffsetY = 0;
+var cameraMoveRegionW = c.width - (cameraMoveRegionX * 2);
+var cameraMoveRegionH = c.height - (cameraMoveRegionY * 2);
+var cameraOffsetX = c.width/2 - startX;
+var cameraOffsetY = c.height/2 - startY;
 var mousePos = {x:0,y:0};
 var origin = {x:0,y:0};
 var damage = "";
 var eid = "";
 var id = "";
 var lightsOff = false;
-var startX = 400,
-    startY = 500;
         
 var oldX = 0;
 var oldY = 0;
@@ -133,6 +133,8 @@ function init() {
     remotePlayers = [];
     // Start listening for events
     setEventHandlers();
+    cameraOffsetX -= localPlayer.getcharW();
+    cameraOffsetY -= localPlayer.getcharH();
 };
 
 
