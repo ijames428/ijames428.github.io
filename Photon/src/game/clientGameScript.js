@@ -70,7 +70,7 @@ var origin = {x:0,y:0};
 var damage = "";
 var eid = "";
 var id = "";
-var lightsOff = true;
+var lightsOff = false;
         
 var oldX = 0;
 var oldY = 0;
