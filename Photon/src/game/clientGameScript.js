@@ -71,6 +71,8 @@ var damage = "";
 var eid = "";
 var id = "";
 var lightsOff = false;
+var startX = 400,
+    startY = 500;
         
 var oldX = 0;
 var oldY = 0;
@@ -123,8 +125,6 @@ function init() {
     // Calculate a random start position for the local player
     // The minus 5 (half a player size) stops the player being
     // placed right on the egde of the screen
-    var startX = c.width / 2,
-        startY = c.height / 2;
 
     // Initialise the local player
     localPlayer = new Player(startX, startY, 'http://www.vgmuseum.com/mrp/cv-sotn/characters/saturn-alucard(2).gif');
@@ -995,7 +995,7 @@ var DefaultController = (function () {
         DefaultController.peer.addEventListener(Photon.Lite.Constants.LiteEventCode.Join, function (e) {
             for(var i = 0; i < e.newActors.length; i++) {
                 if(e.newActors[i] != DefaultController.peer.myActor().photonId) {
-                    onNewPlayer({id: e.newActors[i], x: 400, y: 200});
+                    onNewPlayer({id: e.newActors[i], x: startX, y: startY});
                     DefaultController.output('actor[' + e.newActors[i] + '] joined!');
                 }
             }
