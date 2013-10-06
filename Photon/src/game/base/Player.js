@@ -45,6 +45,7 @@ var Player = function(startX, startY, imgSrc) {
     var currFrame = 0;
     var team = -1;
     var inZone = false;
+    var hasBall = false;
     var lastFrameChangeTime = Date.now();
     var runExtracts = [{x:512,y:520},//0
                        {x:575,y:520},//1
@@ -101,6 +102,7 @@ var Player = function(startX, startY, imgSrc) {
     var getinZone = function() { return inZone; };
     var getrespawnX = function() { return respawnX; };
     var getrespawnY = function() { return respawnY; };
+    var gethasBall = function() { return hasBall; };
     var setX = function(newX) {x = newX;};
     var setY = function(newY) {y = newY;};
     var setWdown = function(input) { Wdown = input; };
@@ -125,6 +127,7 @@ var Player = function(startX, startY, imgSrc) {
     var setinZone = function(input) {inZone = input;};
     var setrespawnX = function(input) {respawnX = input;};
     var setrespawnY = function(input) {respawnY = input;};
+    var sethasBall = function(input) {hasBall = input;};
     
     var update = function() {};
     
@@ -301,7 +304,7 @@ var Player = function(startX, startY, imgSrc) {
         }
         
         if (fireball.active)
-            ctx.drawImage(imageFB, fireball.x, fireball.y, 10, 10);
+            ctx.drawImage(imageFB, fireball.x, fireball.y, 25, 15);
     };
 
     return {
@@ -336,6 +339,7 @@ var Player = function(startX, startY, imgSrc) {
             getinZone: getinZone,
             getrespawnX: getrespawnX,
             getrespawnY: getrespawnY,
+            gethasBall: gethasBall,
             setWdown:setWdown,
             setAdown:setAdown,
             setSdown:setSdown,
@@ -362,5 +366,6 @@ var Player = function(startX, startY, imgSrc) {
             setinZone: setinZone,
             setrespawnX: setrespawnX,
             setrespawnY: setrespawnY,
+            sethasBall: sethasBall,
     };
 };
