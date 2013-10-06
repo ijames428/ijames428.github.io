@@ -67,6 +67,8 @@ var Player = function(startX, startY, imgSrc) {
     imageFB.src = "http://images2.wikia.nocookie.net/__cb20111225172543/nitrome/images/8/88/FireballS.png";
     var fireball = {x:0,y:0,dx:0,dy:0,active:false,spd:30,rng:550};
     
+    var respawnX = startX;
+    var respawnY = startY;
     var x = startX,
         y = startY,
         id = 0,
@@ -97,6 +99,8 @@ var Player = function(startX, startY, imgSrc) {
     var getfireball = function() { return fireball; };
     var getteam = function() { return team; };
     var getinZone = function() { return inZone; };
+    var getrespawnX = function() { return respawnX; };
+    var getrespawnY = function() { return respawnY; };
     var setX = function(newX) {x = newX;};
     var setY = function(newY) {y = newY;};
     var setWdown = function(input) { Wdown = input; };
@@ -119,6 +123,8 @@ var Player = function(startX, startY, imgSrc) {
     var setdealtDamage = function(input) {dealtDamage = input;};
     var setteam = function(input) {team = input;};
     var setinZone = function(input) {inZone = input;};
+    var setrespawnX = function(input) {respawnX = input;};
+    var setrespawnY = function(input) {respawnY = input;};
     
     var update = function() {};
     
@@ -197,8 +203,8 @@ var Player = function(startX, startY, imgSrc) {
     var Revive = function()
     {
         currHealth = maxHealth;
-        x = 400;
-        y = 300;
+        x = respawnX;
+        y = respawnY;
         dead = false;
     }
 
@@ -328,6 +334,8 @@ var Player = function(startX, startY, imgSrc) {
             getfireball: getfireball,
             getteam: getteam,
             getinZone: getinZone,
+            getrespawnX: getrespawnX,
+            getrespawnY: getrespawnY,
             setWdown:setWdown,
             setAdown:setAdown,
             setSdown:setSdown,
@@ -352,5 +360,7 @@ var Player = function(startX, startY, imgSrc) {
             setfireball: setfireball,
             setteam: setteam,
             setinZone: setinZone,
+            setrespawnX: setrespawnX,
+            setrespawnY: setrespawnY,
     };
 };

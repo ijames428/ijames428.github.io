@@ -40,7 +40,7 @@ var level = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1],
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -186,8 +186,8 @@ function init() {
     remotePlayers = [];
     // Start listening for events
     setEventHandlers();
-    cameraOffsetX -= localPlayer.getcharW();
-    cameraOffsetY -= localPlayer.getcharH();
+    cameraOffsetX -= localPlayer.getcharW()/2;
+    cameraOffsetY -= localPlayer.getcharH()/2;
 };
 
 
@@ -521,7 +521,7 @@ function onHitPlayerWithFireball(data) {
     {
         var hitPlayer = playerById(parseInt(data.id));
         if (!hitPlayer) {
-            DefaultController.output("hitPlayer not found: " + data.id);
+            DefaultController.output("hitPlayerWithFireball not found: " + data.id);
         }
         hitPlayer.TakeDamage(parseInt(data.dmg));
     }
@@ -633,7 +633,7 @@ function update() {
         damage = localPlayer.DidAttackHit(remotePlayers[i]) + "";
         if (damage != -1)
         {
-            eid = remotePlayers[i].id + "";
+            eid = remotePlayers[i].getid() + "";
             id = localPlayer.getid() + "";
             try  {
                 DefaultController.peer.raiseEvent(HIT, {
@@ -645,7 +645,7 @@ function update() {
         }
         else if (damage == 0)
         {
-            eid = remotePlayers[i].id + "";
+            eid = remotePlayers[i].getid() + "";
             id = localPlayer.getid() + "";
             try  {
                 DefaultController.peer.raiseEvent(HIT, {
@@ -705,6 +705,11 @@ function updateMovement(player)
         if (player.getinAir())
             player.setY(player.getY() + player.getdY());
     }
+    else
+    {
+        player.setX(player.getrespawnX());
+        player.setY(player.getrespawnY());
+    }
     
     if (player.getfireball().active)
     {
@@ -716,14 +721,12 @@ function updateMovement(player)
             if ((player.getfireball().x >= remotePlayers[i].getX() && player.getfireball().x <= remotePlayers[i].getX() + remotePlayers[i].getcharW()) &&
                 (player.getfireball().y >= remotePlayers[i].getY() && player.getfireball().y <= remotePlayers[i].getY() + remotePlayers[i].getcharH()))
             {
-//            if (vec_mag(vec_sub({x:remotePlayers[i].getX(), y:remotePlayers[i].getY()}, {x:player.getfireball().x, y:player.getfireball().y})) >= remotePlayers[i].getCharW())
-//            {
                 if (player.getid() == remotePlayers[i].getid())
                     continue;
                 player.getfireball().active = false;
                 remotePlayers[i].TakeDamage(5);
                 damage = 5 + "";
-                eid = remotePlayers[i].id + "";
+                eid = remotePlayers[i].getid() + "";
                 id = player.getid() + "";
                 
                 try  {
@@ -929,6 +932,23 @@ function CheckCollision(player) {
             }
         }
     }
+    
+    if (player.getinZone())
+    {
+        //Exit event
+        id = player.getid() + "";
+        teamStr = player.getteam() + "";
+
+        try  {
+            DefaultController.peer.raiseEvent(EXIT, {
+                id : id, team : teamStr
+            });
+        } catch (err) {
+            DefaultController.output("errorExit: " + err.message);
+        }
+        teams[player.getteam()].playersInTerritory--;
+        player.setinZone(false);
+    }
 
     return false;
 };
@@ -941,7 +961,8 @@ function drawWorld() {
     ctx.fillRect(level[0].length * 50/3, 0, level[0].length * 50/3, level.length * 50);//above
     ctx.fillStyle = "rgba(0, 255, 255, 1)";
     ctx.fillRect(level[0].length * 50/3*2, 0, level[0].length * 50/3, level.length * 50);//above
-    
+//    102 51 0  orange
+//    0 51 102  blue
     for (x = 0; x < level[0].length; x++)
     {
         for (y = 0; y < level.length; y++)
@@ -949,6 +970,29 @@ function drawWorld() {
             if (level[y][x] == 1)
             {
                 ctx.drawImage(imageObj, x * 50, y * 50);
+            }
+            else if (level[y][x] == 3)
+            {
+                var my_gradient=ctx.createLinearGradient(x*50,y*50,x*50,y*50+50);
+                my_gradient.addColorStop(0,"rgba(0, 0, 0, 0)");//just for transparency
+                if (teams[0].playersInTerritory > 0 && teams[1].playersInTerritory > 0)
+                {
+                    my_gradient.addColorStop(1,"rgba(0, 102, 0, 1)");
+                }
+                else if (teams[0].playersInTerritory > 0)
+                {
+                    my_gradient.addColorStop(1,"rgba(0, 51, 102, 1)");
+                }
+                else if (teams[1].playersInTerritory > 0)
+                {
+                    my_gradient.addColorStop(1,"rgba(102, 51, 0, 1)");
+                }
+                else
+                {
+                    my_gradient.addColorStop(1,"rgba(160, 160, 160, 1)");
+                }
+                ctx.fillStyle=my_gradient;
+                ctx.fillRect(x*50,y*50,50,50);
             }
         }
     } 
@@ -1030,33 +1074,56 @@ function drawWorld() {
         ctx.restore();
     }
     
-//    if (localPlayer.getfireball().active)
-//        ctx.drawImage(imageFB, localPlayer.getfireball().x, localPlayer.getfireball().y, 10, 10);
-    
     writeMessage();
 };
 
 function writeMessage() {
     ctx.fillStyle="#FFFFFF";
 //    ctx.fillText(localPlayer.getX() + " " + localPlayer.getY(), 10, 25);
-    ctx.fillText("<" + (localPlayer.getteam()+1) + ">", localPlayer.getX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 20);
-    ctx.fillText(localPlayer.getid(), localPlayer.getX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 40);
+    var teamName = "";
+    
+    if (localPlayer.getteam() == 0)
+    {
+        teamName = "<BLUE>";
+    }
+    else if (localPlayer.getteam() == 1)
+    {
+        teamName = "<ORANGE>";
+    }
+    ctx.fillText(teamName, localPlayer.getX() + localPlayer.getcharW()/2 - ((6 + localPlayer.getteam())*teamName.length), localPlayer.getY() - 20);
+//    ctx.fillText(localPlayer.getid(), localPlayer.getX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 40);
 
     for (i = 0; i < teams.length; i++) {
-        ctx.fillText("Team " + (i+1) + ": " + teams[i].points, localPlayer.getX(), localPlayer.getY() - 200 + i*30);
+        if (i == 0)
+        {
+            teamName = "<BLUE>";
+        }
+        else if (i == 1)
+        {
+            teamName = "<ORANGE>";
+        }
+        ctx.fillText("Team " + teamName + ": " + teams[i].points, localPlayer.getX()-570, localPlayer.getY() - 235 + i*30);
     };
     
     for (i = 0; i < remotePlayers.length; i++) {
-        ctx.fillText("<" + (remotePlayers[i].getteam()+1) + ">", remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - (6*remotePlayers[i].getname().length), remotePlayers[i].getY() - 20);
-        ctx.fillText(remotePlayers[i].getid(), remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - (6*remotePlayers[i].getname().length), remotePlayers[i].getY() - 40);
+        if (remotePlayers[i].getteam() == 0)
+        {
+            teamName = "<BLUE>";
+        }
+        else if (remotePlayers[i].getteam() == 1)
+        {
+            teamName = "<ORANGE>";
+        }
+        ctx.fillText(teamName, remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - ((6 + remotePlayers[i].getteam())*teamName.length), remotePlayers[i].getY() - 20);
+//        ctx.fillText(remotePlayers[i].getid(), remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - (6*remotePlayers[i].getname().length), remotePlayers[i].getY() - 40);
     };
 }
 
 function getMousePos(c, evt) {
     var rect = c.getBoundingClientRect();
     return {
-        x: evt.clientX - rect.left,
-        y: evt.clientY - rect.top
+        x: evt.clientX - rect.left-8,
+        y: evt.clientY - rect.top-7
     };
 }
 
@@ -1066,12 +1133,12 @@ c.onclick = function() {
 
 function ThrowProjectile(player)
 {
-    if (!player.getfireball().active)
+    if (!player.getfireball().active && !player.getdead())
     {
         player.getfireball().active = true;
         player.getfireball().x = player.getX();
         player.getfireball().y = player.getY();
-        enemyVec = vec_sub(mousePos, {x:c.width/2, y:c.height/2});
+        enemyVec = vec_sub(mousePos, {x:c.width/2 - player.getcharW()/2, y:c.height/2 - player.getcharH()/2});
         bulletTrajectory = vec_mul(vec_normal(enemyVec), player.getfireball().spd);
         // assign values
         player.getfireball().dx = bulletTrajectory.x;
@@ -1093,18 +1160,18 @@ function ThrowProjectile(player)
 
 function ThrowProjectileAt(player, distinationPoint)
 {
-    if (!player.getfireball().active)
+    if (!player.getfireball().active && !player.getdead())
     {
         player.getfireball().active = true;
         player.getfireball().x = player.getX();
         player.getfireball().y = player.getY();
-        enemyVec = vec_sub(distinationPoint, {x:c.width/2, y:c.height/2});
+        enemyVec = vec_sub(distinationPoint, {x:c.width/2 - player.getcharW()/2, y:c.height/2 - player.getcharH()/2});
         bulletTrajectory = vec_mul(vec_normal(enemyVec), player.getfireball().spd);
         // assign values
         player.getfireball().dx = bulletTrajectory.x;
         player.getfireball().dy = bulletTrajectory.y;
         
-        origin = {x:player.getX(), y:player.getY()};
+        origin = {x:player.getX() + player.getcharW()/2, y:player.getY() + player.getcharH()/2};
     }
 }
 
@@ -1116,7 +1183,6 @@ c.addEventListener('mousemove', function(evt) {
 function playerById(id) {
     var i;
     for (i = 0; i < remotePlayers.length; i++) {
-//        console.log(remotePlayers[i].id);
         if (remotePlayers[i].getid() == id)
             return remotePlayers[i];
     };
@@ -1162,7 +1228,6 @@ var DefaultController = (function () {
                         id : localPlayer.getid(), x : localPlayer.getX(), y : localPlayer.getY(), name : name
                     });
                     DefaultController.output('name me[' + DefaultController.peer.myActor().photonId + ']: ' + name);
-//                    localPlayer.id = Date.now();
                 } catch (err) {
                     DefaultController.output("errorName: " + err.message);
                 }
@@ -1174,7 +1239,6 @@ var DefaultController = (function () {
                         message: String(input.value)
                     });
                     DefaultController.output('me[' + DefaultController.peer.myActor().photonId + ']: ' + input.value);
-//                    localPlayer.id = Date.now();
                 } catch (err) {
                     DefaultController.output("error565: " + err.message);
                 }
