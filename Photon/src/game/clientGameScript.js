@@ -6,36 +6,70 @@ var localPlayer,                // Local player
     
 var development = true;
 
-var level = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-             [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1],
-             [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-             [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0],
-             [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
+var level = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+             [0, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4, 0],
+             [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+             [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+             [0, 2, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
 var txt = "";
 var c = document.getElementById("myCanvas");
 c.height = 720;//level.length * 50;
@@ -59,20 +93,23 @@ var midBoxX = 0;
 var midBoxY = 0;
 var lastHeartBeat = Date.now();
 var localID = -1;
-var startX = 400,
-    startY = 500;
+var startX = 0;
+var startY = 0;
 var cameraMoveRegionX = 300;
 var cameraMoveRegionY = 200;
 var cameraMoveRegionW = c.width - (cameraMoveRegionX * 2);
 var cameraMoveRegionH = c.height - (cameraMoveRegionY * 2);
-var cameraOffsetX = c.width/2 - startX;
-var cameraOffsetY = c.height/2 - startY;
-var mousePos = {x:0,y:0};
-var origin = {x:0,y:0};
+var cameraOffsetX = 0;
+var cameraOffsetY = 0;
+var mousePos = {x:0, y:0};
+var origin = {x:0, y:0};
 var damage = "";
 var eid = "";
 var id = "";
 var lightsOff = false;
+var teamOne = {points:0, players:0, captures:0, lastTick:Date.now(), delta:0, playersInTerritory:0};
+var teamTwo = {points:0, players:0, captures:0, lastTick:Date.now(), delta:0, playersInTerritory:0};
+var teams = [teamOne, teamTwo];
         
 var oldX = 0;
 var oldY = 0;
@@ -85,6 +122,8 @@ var NAME = 7;
 var HIT = 8;
 var FIREBALL = 10;
 var THROW = 11;
+var ENTER = 12;
+var EXIT = 13;
 
 var distX = midCharX - midBoxX;
 var distY = midCharY - midBoxY;
@@ -126,6 +165,20 @@ function init() {
     // The minus 5 (half a player size) stops the player being
     // placed right on the egde of the screen
 
+    for (x = 0; x < level[0].length; x++)
+    {
+        for (y = 0; y < level.length; y++)
+        {
+            if (level[y][x] == 2)
+            {
+                startX = x * 50;
+                startY = y * 50;
+            }
+        }
+    }
+    
+    cameraOffsetX = c.width/2 - startX;
+    cameraOffsetY = c.height/2 - startY;
     // Initialise the local player
     localPlayer = new Player(startX, startY, 'http://www.vgmuseum.com/mrp/cv-sotn/characters/saturn-alucard(2).gif');
     localPlayer.id = localID;
@@ -348,7 +401,8 @@ function onNewPlayer(data) {
     console.log("New player connected: "+data.id);
     
     var newPlayer = new Player(data.x, data.y, 'http://www.vgmuseum.com/mrp/cv-sotn/characters/saturn-alucard(2).gif');
-    newPlayer.id = data.id;
+    newPlayer.setid(data.id);
+    newPlayer.setteam(data.id%2);
     remotePlayers.push(newPlayer);
 };
 
@@ -485,6 +539,18 @@ function onPlayerThrewFireball(data) {
     }
 };
 
+function onPlayerEnteredZone(data) {
+    if (teams[parseInt(data.team)].playersInTerritory == 0)
+    {
+        teams[parseInt(data.team)].lastTick = Date.now();
+    }
+    teams[parseInt(data.team)].playersInTerritory++;
+}
+
+function onPlayerExitedZone(data) {
+    teams[parseInt(data.team)].playersInTerritory--;
+}
+
 function onHitPlayer(data) {
     var attackingPlayer = playerById(parseInt(data.eid));
     
@@ -527,6 +593,31 @@ function animate() {
 **************************************************/
 function update() {
     stats.begin();
+    
+//    if (localPlayer.getteam() == -1)
+        localPlayer.setteam(localPlayer.getid()%2);
+    
+    for (i = 0; i < remotePlayers.length; i++) {
+//        if (remotePlayers[i].getteam() == -1)
+            remotePlayers[i].setteam(remotePlayers[i].getid()%2);
+    };
+    
+    for (i = 0; i < teams.length; i++)
+    {
+        if (teams[i].playersInTerritory > 0)
+        {
+            teams[i].delta = 1;
+            if (teams[i].lastTick + 1000 < Date.now())
+            {
+                teams[i].points += teams[i].delta;
+                teams[i].lastTick = Date.now();
+            }
+        }
+        else
+        {
+            teams[i].delta = 0;
+        }
+    }
     
     ctx.translate(cameraOffsetX, cameraOffsetY);
     cameraOffsetX = 0;
@@ -671,12 +762,14 @@ function CheckCollision(player) {
     {
         player.setY(c.height - player.getcharH());
     }
+    
+    var inZone = false;
 
     for (x = 0; x < level[0].length; x++)
     {
         for (y = 0; y < level.length; y++)
         {
-            if (level[y][x] == 1)
+            if (level[y][x] == 3 || level[y][x] == 1)
             {
                 midCharX = player.getX() + player.getcharW() / 2;//+ localPlayer.getdX() * localPlayer.getspd() + localPlayer.getcharW()/2;
                 if (player.getinAir())
@@ -688,42 +781,150 @@ function CheckCollision(player) {
 
                 distX = midCharX - midBoxX;
                 distY = midCharY - midBoxY;
-
-                if (Math.abs(distX) < player.getcharW() / 2 + 25 && Math.abs(distY) < player.getcharH() / 2 + 25)
+                
+                if (level[y][x] == 3)
                 {
-                    if (distY <= 0 && player.getdY() > 0)//above
+                    if (Math.abs(distX) < player.getcharW() / 2 + 25 && Math.abs(distY) < player.getcharH() / 2 + 25)
                     {
-                        player.setY(y * 50 - player.getcharH());
-                        player.setdY(0);
-                        player.setinAir(false);
-                        player.setdX(0);
+                        if (distY <= 0)//above
+                        {
+                            inZone = true;
+                        }
+                        if (distX < 0)//left
+                        {
+                            inZone = true;
+                        }
                     }
-                    else if (distY > 0 && player.getdY() < 0)//below
-                    {
-                        player.setdY(0);
-                    }
-                    //need to figure out what the primary direction is.
-                    if (distX < 0 && player.getdX() > 0)//left
-                    {
-                        player.setdX(0);
-                    }
-                    else if (distX > 0 && player.getdX() < 0)//right
-                    {
-                        player.setdX(0);
-                    }
-
-                    return true;
                 }
-                if (Math.abs(distX) < player.getcharW() / 2 + 25 && Math.abs(distY) < player.getcharH() / 2 + 26)
+                if (level[y][x] == 1)
                 {
-                    if (distY <= 0 && player.getdY() > 0)//above
+                    if (Math.abs(distX) < player.getcharW() / 2 + 25 && Math.abs(distY) < player.getcharH() / 2 + 25)
                     {
-                        player.setY(y * 50 - player.getcharH());
-                        player.setdY(0);
-                        player.setinAir(false);
-                        player.setdX(0);
+                        if (distY <= 0 && player.getdY() > 0)//above
+                        {
+                            player.setY(y * 50 - player.getcharH());
+                            player.setdY(0);
+                            player.setinAir(false);
+                            player.setdX(0);
+                        }
+                        else if (distY > 0 && player.getdY() < 0)//below
+                        {
+                            player.setdY(0);
+                        }
+                        //need to figure out what the primary direction is.
+                        if (distX < 0 && player.getdX() > 0)//left
+                        {
+                            player.setdX(0);
+                        }
+                        else if (distX > 0 && player.getdX() < 0)//right
+                        {
+                            player.setdX(0);
+                        }
+
+                        if (inZone)
+                        {
+//                            if (teams[player.getteam()].delta == 0)
+//                            {
+//                                teams[player.getteam()].lastTick = Date.now();
+//                            }
+                            if (!player.getinZone())
+                            {
+                                if (teams[player.getteam()].playersInTerritory == 0)
+                                    teams[player.getteam()].lastTick = Date.now();
+                                //Enter event
+                                id = player.getid() + "";
+                                teamStr = player.getteam() + "";
+                                now = Date.now() + "";
+                                
+                                try  {
+                                    DefaultController.peer.raiseEvent(ENTER, {
+                                        id : id, team : teamStr, time : now
+                                    });
+                                } catch (err) {
+                                    DefaultController.output("errorEnter: " + err.message);
+                                }
+                                teams[player.getteam()].playersInTerritory++;
+                                player.setinZone(true);
+                            }
+                        }
+                        else
+                        {
+                            if (player.getinZone())
+                            {
+                                //Exit event
+                                id = player.getid() + "";
+                                teamStr = player.getteam() + "";
+                                
+                                try  {
+                                    DefaultController.peer.raiseEvent(EXIT, {
+                                        id : id, team : teamStr
+                                    });
+                                } catch (err) {
+                                    DefaultController.output("errorExit: " + err.message);
+                                }
+                                teams[player.getteam()].playersInTerritory--;
+                                player.setinZone(false);
+                            }
+                        }
+                        return true;
                     }
-                    return true;
+                    if (Math.abs(distX) < player.getcharW() / 2 + 25 && Math.abs(distY) < player.getcharH() / 2 + 26)
+                    {
+                        if (distY <= 0 && player.getdY() > 0)//above
+                        {
+                            player.setY(y * 50 - player.getcharH());
+                            player.setdY(0);
+                            player.setinAir(false);
+                            player.setdX(0);
+                        }
+
+                        if (inZone)
+                        {
+//                            if (teams[player.getteam()].delta == 0)
+//                            {
+//                                teams[player.getteam()].lastTick = Date.now();
+//                            }
+                            if (!player.getinZone())
+                            {
+                                if (teams[player.getteam()].playersInTerritory == 0)
+                                    teams[player.getteam()].lastTick = Date.now();
+                                //Enter event
+                                id = player.getid() + "";
+                                teamStr = player.getteam() + "";
+                                now = Date.now() + "";
+                                
+                                try  {
+                                    DefaultController.peer.raiseEvent(ENTER, {
+                                        id : id, team : teamStr, time : now
+                                    });
+                                } catch (err) {
+                                    DefaultController.output("errorEnter: " + err.message);
+                                }
+                                teams[player.getteam()].playersInTerritory++;
+                                player.setinZone(true);
+                            }
+                        }
+                        else
+                        {
+                            if (player.getinZone())
+                            {
+                                //Exit event
+                                id = player.getid() + "";
+                                teamStr = player.getteam() + "";
+                                
+                                try  {
+                                    DefaultController.peer.raiseEvent(EXIT, {
+                                        id : id, team : teamStr
+                                    });
+                                } catch (err) {
+                                    DefaultController.output("errorExit: " + err.message);
+                                }
+                                teams[player.getteam()].playersInTerritory--;
+                                player.setinZone(false);
+                            }
+                        }
+                        return true;
+                    }
                 }
             }
         }
@@ -838,10 +1039,16 @@ function drawWorld() {
 function writeMessage() {
     ctx.fillStyle="#FFFFFF";
 //    ctx.fillText(localPlayer.getX() + " " + localPlayer.getY(), 10, 25);
-    ctx.fillText(localPlayer.getname(), localPlayer.getX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 20);
+    ctx.fillText("<" + (localPlayer.getteam()+1) + ">", localPlayer.getX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 20);
+    ctx.fillText(localPlayer.getid(), localPlayer.getX() + localPlayer.getcharW()/2 - (6*localPlayer.getname().length), localPlayer.getY() - 40);
 
+    for (i = 0; i < teams.length; i++) {
+        ctx.fillText("Team " + (i+1) + ": " + teams[i].points, localPlayer.getX(), localPlayer.getY() - 200 + i*30);
+    };
+    
     for (i = 0; i < remotePlayers.length; i++) {
-        ctx.fillText(remotePlayers[i].getname(), remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - (6*remotePlayers[i].getname().length), remotePlayers[i].getY() - 20);
+        ctx.fillText("<" + (remotePlayers[i].getteam()+1) + ">", remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - (6*remotePlayers[i].getname().length), remotePlayers[i].getY() - 20);
+        ctx.fillText(remotePlayers[i].getid(), remotePlayers[i].getX() + remotePlayers[i].getcharW()/2 - (6*remotePlayers[i].getname().length), remotePlayers[i].getY() - 40);
     };
 }
 
@@ -910,7 +1117,7 @@ function playerById(id) {
     var i;
     for (i = 0; i < remotePlayers.length; i++) {
 //        console.log(remotePlayers[i].id);
-        if (remotePlayers[i].id == id)
+        if (remotePlayers[i].getid() == id)
             return remotePlayers[i];
     };
 
@@ -993,6 +1200,7 @@ var DefaultController = (function () {
         DefaultController.peer.addResponseListener(Photon.Lite.Constants.LiteOpCode.Join, function (e) {
             DefaultController.output('I joined with id: [' + e.actorNr + '].');
             localPlayer.setid(e.actorNr);
+            localPlayer.setteam(e.actorNr%2);
         });
         DefaultController.peer.addEventListener(Photon.Lite.Constants.LiteEventCode.Join, function (e) {
             for(var i = 0; i < e.newActors.length; i++) {
@@ -1072,6 +1280,17 @@ var DefaultController = (function () {
             var datamx  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].mx;
             var datamy = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].my;
             onPlayerThrewFireball({eid : dataid, mx : datamx, my : datamy});
+        });
+        DefaultController.peer.addEventListener(ENTER, function (data) {
+            var dataid  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
+            var datateam  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].team;
+            var datatime  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].time;
+            onPlayerEnteredZone({id : dataid, team : datateam, time : datatime});
+        });
+        DefaultController.peer.addEventListener(EXIT, function (data) {
+            var dataid  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].id;
+            var datateam  = arguments[0].vals[Photon.Lite.Constants.LiteOpKey.Data].team;
+            onPlayerExitedZone({id : dataid, team : datateam});
         });
         DefaultController.peer.connect();
     };

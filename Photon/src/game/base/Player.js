@@ -43,6 +43,8 @@ var Player = function(startX, startY, imgSrc) {
     var deathTimer = 5000;
     var deathTime = 0;
     var currFrame = 0;
+    var team = -1;
+    var inZone = false;
     var lastFrameChangeTime = Date.now();
     var runExtracts = [{x:512,y:520},//0
                        {x:575,y:520},//1
@@ -93,6 +95,8 @@ var Player = function(startX, startY, imgSrc) {
     var getdealtDamage = function() { return dealtDamage; };
     var getdead = function() { return dead; };
     var getfireball = function() { return fireball; };
+    var getteam = function() { return team; };
+    var getinZone = function() { return inZone; };
     var setX = function(newX) {x = newX;};
     var setY = function(newY) {y = newY;};
     var setWdown = function(input) { Wdown = input; };
@@ -113,6 +117,8 @@ var Player = function(startX, startY, imgSrc) {
     var setcurrHealth = function(input) { currHealth = input; };
     var setattacking = function(input) {attacking = input;};
     var setdealtDamage = function(input) {dealtDamage = input;};
+    var setteam = function(input) {team = input;};
+    var setinZone = function(input) {inZone = input;};
     
     var update = function() {};
     
@@ -320,6 +326,8 @@ var Player = function(startX, startY, imgSrc) {
             getdealtDamage: getdealtDamage,
             getdead: getdead,
             getfireball: getfireball,
+            getteam: getteam,
+            getinZone: getinZone,
             setWdown:setWdown,
             setAdown:setAdown,
             setSdown:setSdown,
@@ -342,5 +350,7 @@ var Player = function(startX, startY, imgSrc) {
             TakeDamage: TakeDamage,
             Revive: Revive,
             setfireball: setfireball,
+            setteam: setteam,
+            setinZone: setinZone,
     };
 };
